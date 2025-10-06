@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password - Chaploy</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body class="reset-page">
+  <!-- <%- include('partials/navbar') %> -->
+
+  <div class="reset-container">
+    <h2>RESET PASSWORD</h2>
+
+    <% if (message) { %>
+    <p style="color: #a0ffb3; font-weight: bold; margin-bottom: 10px;  padding: 10px; border-radius: 5px;">
+    <%= message %>
+    </p>
+    <% } %>
+
+    <!-- ❌ แสดงข้อความ error -->
+    <% if (error) { %>
+        <p style="color: #ff9090; font-weight: bold; margin-bottom: 10px;  padding: 10px; border-radius: 5px;">
+    <%= error %>
+    </p>
+    <% } %>
+
+    <p class="reset-description">
+      Lost your password? Please enter your username or email address.<br>
+      You will receive a link to create a new password via email.
+    </p>
+
+    <form action="/reset-password" method="POST" class="reset-form">
+      <div class="reset-input-group">
+        <input type="text" id="username" name="username" placeholder=" " required>
+        <label for="username">Username or email *</label>
+      </div>
+
+      <button type="submit" class="reset-btn">RESET PASSWORD</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Chaploy</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body class="login-page">
+  <!-- <%- include('partials/navbar') %> -->
+  <div class="login-main-container">
+    <div class="login-form-box">
+      <div class="login-background-box"></div>
+      <h2>LOG IN</h2>
+      <form action="/login" method="POST">
+        <div class="login-input-container">
+          <input type="text" name="username" placeholder=" " required>
+          <label>USERNAME OR EMAIL *</label>
+        </div>
+        <div class="login-input-container">
+          <input type="password" name="password" placeholder=" " required>
+          <label>PASSWORD *</label>
+        </div>
+
+        <div class="login-remember-me">
+          <input type="checkbox" id="remember" name="remember">
+          <label for="remember">Remember me</label>
+        </div>
+
+        <button type="submit" class="login-submit-button">LOGIN</button>
+      </form>
+
+      <div class="login-links">
+        <a href="reset">Lost your password?</a> <a href="register">| Register</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaploy</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="navbar-left">
+    <a href="/" class="nav-link">SHOP</a>
+    <a href="/about" class="nav-link">ABOUT</a>
+    <a href="/free" class="nav-link">FREE</a>
+  </div>
+
+  <div class="navbar-center">
+    <a href="/" class="site-title">CHAPLOY</a>
+  </div>
+
+
+  <div class="navbar-right">
+  <a href="/contact" class="nav-link">CONTACT</a>
+  <% if (user) { %>
+    <div class="dropdown">
+  <a href="#" class="nav-link">ACCOUNT</a>
+  <div class="dropdown-content">
+    <strong><%= user.username %></strong>
+    <small><%= user.email %></small>
+    <hr>
+    <a href="/profile">Profile</a>
+    <a href="/purchases">Purchases</a>
+    <a href="/settings">Account Settings</a>
+    <a href="/signout">Sign Out</a>
+  </div>
+</div>
+  <% } else { %>
+    <a href="/login" class="nav-link">LOGIN</a>
+  <% } %>
+  <a href="/basket" class="nav-link">BASKET (0)</a>
+</div>
+</nav>
+</body>
+</html>

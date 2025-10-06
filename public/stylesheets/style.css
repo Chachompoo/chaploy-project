@@ -1,0 +1,564 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Archivo+Black&family=Baloo+Bhaijaan+2:wght@400..800&family=Castoro+Titling&family=Cinzel:wght@400..900&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Geologica:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+JP:wght@100..900&family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Quicksand:wght@300..700&family=Tangerine:wght@400;700&display=swap');
+@media (max-width: 900px) {
+  .register-container {
+    flex-direction: column;
+  }
+  .register-image {
+    height: 300px;
+  }
+}
+
+
+/* homepage */
+body  {
+      margin: 0;
+      padding: 0;
+      background-color: #f2f3ef;
+      text-align: center;
+    }
+
+/* Navbar */
+.navbar {
+    position: fixed;       /* ทำให้ติดอยู่บนตลอด */
+    top: 0;                /* ชิดขอบบน */
+    left: 0;               /* ชิดซ้าย */
+    width: 96%;           /* กินเต็มจอ */
+    z-index: 1000;         /* อยู่เหนือ element อื่น */
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background-color: #f2f3ef;
+    border-bottom: 1px solid #999995
+}
+
+.navbar-left,
+.navbar-right {
+    display: flex;
+    gap: 30px; /* Space between links */
+}
+
+.navbar-center {
+    flex-grow: 1; /* Allows it to take up available space */
+    text-align: center; /* Center the text */
+}
+
+.nav-link {
+    font-family: "Quicksand", sans-serif;
+    text-decoration: none; /* Remove underline from links */
+    color: #4e4f4e; /* Darker text color for links */
+    font-size: 18px;
+    font-weight: 500; /* Medium font weight */
+    transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.nav-link:hover {
+    color: #777; /* Slightly lighter color on hover */
+}
+
+.site-title {
+    font-family: "Cinzel", serif;
+    font-size: 30px; /* Larger font size for the title */
+    font-weight: normal; /* Normal font weight, or you might want to adjust */
+    color: #4e4f4e; /* A darker, slightly desaturated color for the title */
+    letter-spacing: 2px; /* Add some letter spacing */
+    text-transform: uppercase; /* Uppercase for the title */
+    text-decoration: none;
+    display: inline-block;          /* ต้องอยู่ตรงนี้ */
+    transition: all 0.3s ease;      /* transition ต้องอยู่ตรงนี้ */
+    cursor: pointer;
+}
+.site-title:hover {
+    transform: scale(1.25); /* ขยายตอน hover */
+    color: #777;  
+}
+
+/* กล่องหลัก dropdown */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* ปุ่ม Account */
+.dropdown > .nav-link {
+  display: block;
+  padding: 0px 15px;
+}
+
+/* เมนู dropdown */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;                /* ชิดด้านล่างปุ่ม */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f2f3ef;
+  min-width: 220px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 1000;
+  border-radius: 0px;
+  text-align: left;
+  border: #000 1px solid;
+  margin: 0;           
+  padding: 10px 0;
+}
+
+/* username */
+.dropdown-content strong {
+  display: block;
+  padding: 8px 12px 0 12px;
+  color: #333;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* email */
+.dropdown-content small {
+  display: block;
+  padding: 0 12px 8px 12px;
+  color: #555;
+  font-size: 16px;
+}
+
+/* ลิงก์ด้านใน */
+.dropdown-content a {
+  display: block;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #333;
+}
+
+.dropdown-content a:hover {
+  background-color: #f5f5f5;
+}
+
+/* hover แสดงเมนู */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
+
+/* navbar homepage*/
+.home-page .navbar { background-color: #f2f3ef;; }  /* หน้า Home */
+/* navbar login*/
+.login-page .navbar { background-color: transparent;}
+.login-page .navbar a { color: #ffffff;}
+.login-page .navbar .site-title{
+  font-family: "Geologica", sans-serif; 
+  font-size: 35px;
+  color: #ffffff;
+}
+/* navbar register*/
+.register-page .navbar .site-title { 
+  font-family: "Geologica", sans-serif; 
+  font-size: 35px;
+}
+.register-page .navbar a { color: #ffffff;}
+.register-page .navbar { 
+  background-color: transparent; 
+  border-bottom: 2px solid #ffffff;
+}
+/* navbar Contact*/
+.contact-page .navbar { 
+  background-color: #f7f1ed;
+  border-bottom: 1px solid #999995;
+} 
+.contact-page .navbar a { color: #fcc593;}
+.contact-page .navbar .site-title{
+  font-family: "Geologica", sans-serif; 
+  font-size: 35px;
+  color: #f19072;
+}
+
+/* Login */
+.login-main-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.login-form-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 30px;
+  background: url('/images/bg-login.jpg') no-repeat center center;
+  background-size: cover;
+  position: relative;
+}
+
+.login-background-box {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20%);
+  width: 60%;
+  height: 600px;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  border-radius: 8px;
+  z-index: 0;
+}
+
+.login-form-box h2 {
+  color: #fff;
+  font-size: 35px;
+  z-index: 1;
+  font-family: "Geologica", sans-serif;
+}
+
+.login-form-box form,
+.login-links {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  font-family: "Geologica", sans-serif;
+}
+
+.login-input-container {
+  position: relative;
+  margin: 20px auto;
+  width: 50%;
+  font-family: "Quicksand", sans-serif;
+}
+
+.login-input-container input {
+  width: 100%;
+  height: 40px;
+  padding: 12px;
+  font-size: 25px;
+  border: 1px solid #fff;
+  background: none;
+  color: #fff;
+}
+
+.login-input-container label {
+  position: absolute;
+  top: 0%;
+  left: 12px;
+  transform: translateY(-50%);
+  background-color: rgba(0,0,0,0.1);
+  backdrop-filter: blur(3px);
+  padding: 0 4px;
+  color: #fff;
+  font-size: 18px;
+  pointer-events: none;
+  transition: 0.2s ease all;
+}
+
+.login-remember-me {
+  display: flex;
+  align-items: center;
+  width: 50%;
+  margin: 10px auto 20px auto;
+  gap: 10px;
+}
+
+.login-remember-me input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #000;
+  margin: 0;
+}
+
+.login-remember-me label {
+  font-size: 16px;
+  color: #fff;
+}
+
+.login-submit-button {
+  display: block;
+  width: 50%;
+  padding: 14px;
+  background-color: #fff;
+  color: #000;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  margin: 20px auto 0 auto;
+  font-family: "Geologica", sans-serif;
+}
+
+.login-submit-button:hover {
+  background-color: #bdbdbd;
+}
+
+.login-links {
+  margin-top: 25px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.login-links a {
+  text-decoration: none;
+  color: #fff;
+}
+
+/* Register Page */
+.register-page {
+  background: url('/images/bg-register.jpg') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: "Quicksand", sans-serif;
+}
+
+/* กล่องหลัก */
+.register-main-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-form-box {
+  position: relative;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 50px 60px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  width: 65%;
+  max-width: 900px;
+}
+
+/* หัวข้อ */
+.register-form-box h2 {
+  color: #fff;
+  font-size: 34px;
+  font-weight: 600;
+  margin-bottom: 35px;
+  position: relative;
+  top: -25px;
+  font-family: "Noto Sans JP", sans-serif;
+}
+
+/* Layout ช่อง 2 คอลัมน์ */
+.register-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px 30px;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
+}
+
+/* แต่ละช่อง */
+.register-input-group {
+  position: relative;
+}
+
+.register-input-group input {
+  width: 95%;
+  padding: 15px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 18px;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: "Quicksand", sans-serif;
+}
+
+.register-input-group input:focus {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  
+}
+
+/* label ลอยขึ้นเมื่อ focus หรือมีค่าภายใน */
+.register-input-group label {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+  transition: 0.25s ease;
+  font-size: 18px;
+  background: transparent;
+  font-family: "Quicksand", sans-serif;
+}
+
+.register-input-group input:focus + label,
+.register-input-group input:not(:placeholder-shown) + label {
+  top: -10px;
+  left: 0px;
+  font-size: 16px;
+  color: #fff;
+  padding: 0 6px;
+  border-radius: 5px;
+}
+
+/* ปุ่ม Register */
+.register-submit-button {
+  grid-column: span 2;
+  width: 60%;
+  padding: 14px;
+  margin: 10px auto 0 auto;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(90deg, #fff, #f1e6e3);
+  color: #000;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: "Geologica", sans-serif;
+}
+
+.register-submit-button:hover {
+  background: #eaeaea;
+  transform: translateY(-2px);
+}
+
+/* ลิงก์ Login */
+.register-login-link {
+  grid-column: span 2;
+  margin-top: 25px;
+  font-size: 15px;
+  text-align: center;
+  color: #fff;
+  font-family: "Geologica", sans-serif;
+}
+
+.register-login-link a {
+  color: #fff;
+  text-decoration: none;
+}
+
+
+/* Reset Password Page */
+.reset-page {
+  background: url('/images/bg-reset.jpg') no-repeat center center;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Geologica", sans-serif;
+}
+
+.reset-container {
+  width: 60%;
+  max-width: 700px;
+  background-color: rgba(48, 48, 48, 0.267);
+  backdrop-filter: blur(6px);
+  border: 1px;
+  border-radius: 8px;
+  padding: 50px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.reset-container h2 {
+  font-size: 35px;
+  margin-bottom: 20px;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.reset-description {
+  font-size: 18px;
+  color: #ffffff;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.reset-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.reset-input-group {
+  position: relative;
+  margin: 30px auto;
+  width: 60%;
+}
+
+.reset-input-group label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+  pointer-events: none;
+  font-size: 20px;
+  transition: all 0.25s ease;
+  background: transparent;
+  font-family: "Geologica", sans-serif;
+}
+
+/* เวลาคลิกหรือมีค่าข้างใน */
+.reset-input-group input:focus + label,
+.reset-input-group input:not(:placeholder-shown) + label {
+  top: -18px;
+  left: 0px;
+  font-size: 16px;
+  padding: 0 6px;
+  border-radius: 3px;
+}
+
+.reset-input-group input {
+  width: 100%;
+  padding: 14px 12px;
+  font-size: 18px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: "Geologica", sans-serif;
+  backdrop-filter: blur(4px);
+}
+
+.reset-input-group input:focus {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.reset-btn {
+  width: 80%;
+  padding: 18px;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.reset-btn:hover {
+  background-color: #333;
+}
+
+.reset-container p {
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  padding: 10px;
+  transition: 0.3s ease;
+}
+
+.reset-container p[style*="color: #a0ffb3"] {
+  color: #a0ffb3;
+}
+
+.reset-container p[style*="color: #ff9090"] {
+  color: #ff8080;
+}
+
+
+
+

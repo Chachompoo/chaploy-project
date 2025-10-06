@@ -1,0 +1,125 @@
+/* homepage */
+body  {
+      margin: 0;
+      padding: 0;
+      background-color: #f2f3ef;
+      text-align: center;
+    }
+
+    .hero {
+      padding: 100px 20px;
+      margin-top: 100px;
+    }
+
+    .hero h1 {
+      font-family: "Cormorant Garamond", serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 130px;
+      letter-spacing: 2px;
+      color: #0f0f0f;
+      margin: 0;
+      transform: translate(-450px, 50px);
+    }
+
+    .hero h2 {
+      font-family: "Cormorant Garamond", serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 130px;
+      color: #0f0f0f;
+      margin: 20px 0;
+      transform: translate(380px, -400px);
+    }
+    .hero h3 {
+      font-family: "Cormorant Garamond", serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 130px;
+      color: #0f0f0f;
+      margin: 20px 0;
+      transform: translate(-30px, -440px);
+    }
+    .hero h4 {
+      font-family: "Tangerine", cursive;
+      font-weight: 400;
+      font-style: normal;     
+      font-size: 200px;
+      color: #0f0f0f;
+      margin: 20px 0;
+      transform: translate(-470px, -500px);
+    }
+    .hero h5 {
+      font-family: "Cormorant Garamond", serif;
+      font-weight: 400;
+      font-style: normal; 
+      font-size: 130px;
+      color: #0f0f0f;
+      margin: 20px 0;
+      transform: translate(50px, -700px);
+    }
+
+    .hero img {
+      max-width: 300px;
+      display: block;
+      margin: 20px auto;
+      transform: translate(-20px,-250px);
+    }
+
+
+/* Contact Page */
+.contact-main-container {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(
+    to right,
+    #70b5ec 50%,    /* สีชมพูอ่อนที่เริ่ม 0% */
+    #584340 50%
+  );
+}
+
+.contact-left,
+.contact-right {
+  flex: 1;
+  overflow: hidden;
+}
+
+.contact-left img {
+  object-fit: cover;
+  display: block;
+  width: 50%;
+  height: 60%;
+  border-radius: 10px;
+  transition: transform 0.4s ease;
+  transform: translateX(50%) translateY(40%);
+}
+
+.contact-right img {
+  object-fit: cover;
+  display: block;
+  width: 50%;
+  height: 60%;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: transform 0.4s ease;
+  transform: translateX(50%) translateY(40%);
+}
+.contact-right img:hover{
+  transform: scale(1.08);
+}
+.contact-left img:hover {
+  transform: scale(1.08);
+}
+.contact-text h2 {
+  font-size: 50px;
+  font-family: "Cinzel", serif;
+  margin-bottom: 10px;
+  color: #e70000;
+  letter-spacing: 3px;
+}
+.contact-text h3 {
+  font-size: 28px;
+  font-family: "Geologica", sans-serif;
+  font-weight: 400;
+  color: #fff;
+}

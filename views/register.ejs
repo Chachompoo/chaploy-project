@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Chaploy </title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body class="register-page">
+  <!-- <%- include('partials/navbar') %> -->
+  <div class="register-main-container">
+    <div class="register-form-box">
+      <div class="register-background-box"></div>
+      <h2>REGISTRATION</h2>
+      <form action="/register" method="POST" class="register-form">
+        <div class="register-input-group">
+          <input type="text" id="firstName" name="firstName" placeholder=" " required>
+          <label for="firstName">FIRST NAME *</label>
+        </div>
+
+        <div class="register-input-group">
+          <input type="text" id="lastName" name="lastName" placeholder=" " required>
+          <label for="lastName">LAST NAME *</label>
+        </div>
+
+        <div class="register-input-group">
+          <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder=" " required>
+          <label for="phone">PHONE NUMBER *</label>
+        </div>
+
+        <div class="register-input-group">
+          <input type="email" id="email" name="email" placeholder=" " required>
+          <label for="email">EMAIL ADDRESS *</label>
+        </div>
+
+        <div class="register-input-group">
+          <input type="text" id="username" name="username" placeholder=" " required>
+          <label for="username">USERNAME *</label>
+        </div>
+
+        <div class="register-input-group">
+          <input type="password" id="password" name="password" placeholder=" " required>
+          <label for="password">PASSWORD *</label>
+        </div>
+
+        <button type="submit" class="register-submit-button">REGISTER</button>
+      </form>
+
+      <p class="register-login-link">Already have an account? <a href="/login"> Login here</a></p>
+    </div>
+  </div>
+</body>
+
+</html>
