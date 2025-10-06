@@ -59,13 +59,13 @@ router.post('/', (req, res) => {
     <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
       
       <!-- Header -->
-      <div style="background: linear-gradient(135deg, #d6c6b9, #b59f8c); padding: 25px; text-align: center;">
-        <img src="https://raw.githubusercontent.com/USERNAME/REPOSITORY/main/public/images/Chaploy.png" 
-             alt="Chaploy Logo" 
-             style="width: 70px; height: 70px; object-fit: contain; display: block; margin: 0 auto 8px auto;">
-        <h1 style="color: #fff; font-weight: 600; letter-spacing: 1px; margin: 0;">Chaploy</h1>
-        <p style="color: #fff; opacity: 0.9; font-size: 15px; margin: 5px 0 0;">Your Tea & Serenity Space</p>
-      </div>
+      <div style="background: linear-gradient(135deg, #d6c6b9, #b59f8c); padding: 20px 0 15px 0; text-align: center;">
+  <img src="https://raw.githubusercontent.com/Chachompoo/chaploy-project/main/public/images/Chaploy-remove.png" 
+       alt="Chaploy Logo" 
+       style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 5px;">
+  <h1 style="color: #fff; font-weight: 600; letter-spacing: 1px; margin: 3px 0 0;">Chaploy</h1>
+  <p style="color: #fff; opacity: 0.9; font-size: 14px; margin: 3px 0 0;">Your Tea & Serenity Space</p>
+</div>
 
       <!-- Content -->
       <div style="padding: 35px 40px; color: #333;">
