@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - Chaploy Admin</title>
+  <link rel="stylesheet" href="/stylesheets/admin.css">
+</head>
+<body class="admin-menu-page">
+  <div class="admin-menu-container">
+    <h1>CHAPLOY ADMIN PANEL</h1>
+    <p>Welcome, <%= user ? user.username : 'Admin' %> 🌿</p>
+
+    <div class="admin-menu-grid">
+      <a href="/admin/dashboard" class="admin-card">
+        <h2>📊 Dashboard</h2>
+        <p>View reports and overall system summary</p>
+      </a>
+
+      <a href="/admin/products" class="admin-card">
+        <h2>🛍 Products</h2>
+        <p>Manage product list, prices, and stock</p>
+      </a>
+
+      <a href="/admin/employee" class="admin-card">
+        <h2>👥 Employees</h2>
+        <p>Add or manage employee accounts</p>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

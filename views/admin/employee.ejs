@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Employees - Chaploy Admin</title>
+  <link rel="stylesheet" href="/stylesheets/admin.css?v=<%= Date.now() %>">
+</head>
+<body class="admin-employee-page">
+  <%- include('../partials/admin_navbar') %>
+
+  
+  <div class="employee-container">
+    <h2><i class="fas fa-users"></i> Manage Employees</h2>
+
+    <!-- Search + Add -->
+    <div class="employee-actions">
+  <div class="employee-search">
+    <input type="text" id="employeeSearch" placeholder="Search employee...">
+    <button class="btn-search"></button>
+  </div>
+  <button class="btn-employee-add" id="openAddAdmin">Add Admin</button>
+</div>
+
+    <!-- Table -->
+    <table class="employee-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Username</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody id="employeeTableBody">
+        <% employees.forEach((emp, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= emp.fullname %></td>
+            <td><%= emp.email %></td>
+            <td><%= emp.username %></td>
+            <td><%= emp.role %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <!-- Modal Add Admin -->
+  <div class="employee-modal" id="addModal">
+    <div class="employee-modal-content">
+      <h3>Add New Admin</h3>
+      <form id="addAdminForm">
+  <div class="employee-form-group">
+    <label>Full Name</label>
+    <input type="text" name="fullname" required>
+  </div>
+  <div class="employee-form-group">
+    <label>Email</label>
+    <input type="email" name="email" required>
+  </div>
+  <div class="employee-form-group">
+    <label>Username</label>
+    <input type="text" name="username" required>
+  </div>
+  <div class="employee-form-group">
+    <label>Password</label>
+    <input type="password" name="password" required>
+  </div>
+
+  <div class="employee-modal-buttons">
+    <button type="submit" class="btn-save-admin">Save</button>
+    <button type="button" id="closeModal" class="btn-cancel-admin">Cancel</button>
+  </div>
+</form>
+    </div>
+  </div>
+
+  <script>
+  // 🔍 Search
+  const searchInput = document.getElementById("employeeSearch");
+  const rows = document.querySelectorAll("#employeeTableBody tr");
+  searchInput.addEventListener("input", () => {
+    const val = searchInput.value.toLowerCase();
+    rows.forEach(row => {
+      const name = row.children[1].textContent.toLowerCase();
+      row.style.display = name.includes(val) ? "" : "none";
+    });
+  });
+
+  // 🟢 Modal
+  const modal = document.getElementById("addModal");
+  document.getElementById("openAddAdmin").onclick = () => modal.style.display = "flex";
+  document.getElementById("closeModal").onclick = () => modal.style.display = "none";
+  window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+
+  // 🧩 Add Admin (AJAX)
+  document.getElementById("addAdminForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const data = Object.fromEntries(formData.entries());
+
+    const res = await fetch("/admin/employee/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+      // ✅ เพิ่มแถวใหม่ในตารางแบบไม่ reload
+      const tbody = document.getElementById("employeeTableBody");
+      const newRow = document.createElement("tr");
+      const currentCount = tbody.querySelectorAll("tr").length + 1;
+
+      newRow.innerHTML = `
+        <td>${currentCount}</td>
+        <td>${result.data.fullname}</td>
+        <td>${result.data.email}</td>
+        <td>${result.data.username}</td>
+        <td>${result.data.role}</td>
+      `;
+      tbody.appendChild(newRow);
+
+      // ปิด modal และล้างฟอร์ม
+      modal.style.display = "none";
+      form.reset();
+    } else {
+      alert("❌ Error: " + result.message);
+    }
+  });
+</script>
+</body>
+</html>

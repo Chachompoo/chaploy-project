@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Product</title>
+  <link rel="stylesheet" href="/stylesheets/admin.css">
+</head>
+<body class="admin-products">
+  <%- include('../partials/admin_navbar') %>
+
+  <div class="add-product-container">
+    <h2>Add New Product</h2>
+
+    <form class="add-product-form" action="/admin/products/add" method="POST" enctype="multipart/form-data">
+
+      <!-- 🟢 Row 1 -->
+      <div class="add-form-group">
+        <div class="add-form-item">
+          <label>Product Name</label>
+          <input type="text" name="name" placeholder="Enter product name..." required>
+        </div>
+        <div class="add-form-item">
+          <label>Price (฿)</label>
+          <input type="number" name="price" step="0.01" placeholder="0.00" required>
+        </div>
+        <div class="add-form-item">
+          <label>Stock</label>
+          <input type="number" name="stock" placeholder="0" required>
+        </div>
+      </div>
+
+      <!-- 🟢 Row 2 -->
+      <div class="add-form-group">
+        <div class="add-form-item">
+          <label>Category</label>
+          <select name="category_id" required>
+            <option value="">-- Select Category --</option>
+            <% categories.forEach(cat => { %>
+              <option value="<%= cat.id %>"><%= cat.name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="add-form-item">
+          <label>Status</label>
+          <select name="status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="add-form-item add-upload">
+          <label>Image</label>
+          <input type="file" name="image" accept="image/*">
+        </div>
+      </div>
+
+      <!-- 🟢 Description -->
+      <div class="add-description">
+        <label>Description</label>
+        <textarea name="description" rows="4" placeholder="Write short product details..."></textarea>
+      </div>
+
+      <!-- 🟢 Buttons -->
+      <div class="add-form-actions">
+        <button type="submit" class="btn-add-save">Save Product</button>
+        <a href="/admin/products" class="btn-add-cancel">Cancel</a>
+      </div>
+
+    </form>
+  </div>
+</body>
+</html>

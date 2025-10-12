@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Product - Chaploy Admin</title>
+  <link rel="stylesheet" href="/stylesheets/admin.css?v=<%= Date.now() %>">
+</head>
+<body class="edit-product-page">
+
+  <%- include('../partials/admin_navbar') %>
+  <h2>Edit Product</h2>
+  <div class="edit-wrapper">
+
+    <form class="edit-form" action="/admin/products/edit/<%= product.id %>" method="POST" enctype="multipart/form-data">
+
+      <!-- Row 1 -->
+      <div class="edit-row">
+        <div class="edit-field">
+          <label>Product Name</label>
+          <input type="text" name="name" value="<%= product.name %>" required>
+        </div>
+        <div class="edit-field">
+          <label>Price (฿)</label>
+          <input type="number" name="price" value="<%= product.price %>" step="0.01" required>
+        </div>
+        <div class="edit-field">
+          <label>Stock</label>
+          <input type="number" name="stock" value="<%= product.stock %>" required>
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="edit-row">
+        <div class="edit-field">
+          <label>Category</label>
+          <select name="category_id">
+            <% categories.forEach(cat => { %>
+              <option value="<%= cat.id %>" <%= cat.id === product.categories_id ? 'selected' : '' %>>
+                <%= cat.name %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="edit-field">
+          <label>Status</label>
+          <select name="status">
+            <option value="active" <%= product.status === 'active' ? 'selected' : '' %>>Active</option>
+            <option value="inactive" <%= product.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+          </select>
+        </div>
+
+        <div class="edit-field">
+          <label>Image</label>
+          <div class="edit-upload-box">
+            <input type="file" name="image" accept="image/*" id="imageInput">
+            <% if (product.image) { %>
+              <img src="<%= product.image %>" class="edit-preview" alt="Preview">
+            <% } %>
+          </div>
+          <input type="hidden" name="old_image" value="<%= product.image %>">
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="edit-desc">
+        <label>Description</label>
+        <textarea name="description" rows="3"><%= product.description || '' %></textarea>
+      </div>
+
+      <!-- Buttons -->
+      <div class="edit-buttons">
+        <button type="submit" class="btn-save">Save Changes</button>
+        <a href="/admin/products" class="btn-cancel">Cancel</a>
+      </div>
+    </form>
+
+    <!-- History -->
+    <div class="edit-history-box">
+      <h3>Update History</h3>
+      <p><strong>Updated at:</strong> <%= product.updated_at ? new Date(product.updated_at).toLocaleString() : '-' %></p>
+      <p><strong>Updated by:</strong> <%= product.updated_by_name || '-' %></p>
+      <small>Created by <%= product.created_by_name || '-' %> on 
+      <%= product.created_at ? new Date(product.created_at).toLocaleString() : '-' %></small>
+    </div>
+  </div>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const preview = document.querySelector('.edit-preview');
+
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        if (preview) preview.src = ev.target.result;
+        else {
+          const img = document.createElement('img');
+          img.src = ev.target.result;
+          img.classList.add('edit-preview');
+          imageInput.parentNode.appendChild(img);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  </script>
+
+</body>
+</html>

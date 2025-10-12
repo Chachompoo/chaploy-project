@@ -1,48 +1,68 @@
-// routes/register.js
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
+const bcrypt = require('bcrypt');
 
+// ✅ Show register page
 router.get('/', (req, res) => {
-  res.render('register'); // แสดงหน้า register.ejs
+  res.render('register', { error: null, success: null }); // ✅ ค่าตั้งต้น
 });
 
+// ✅ Handle register form
 router.post('/', (req, res) => {
-  const { firstName, lastName, email, phone, password, username } = req.body;
+  const { firstName, lastName, email, phone, username, password } = req.body;
 
-  // ตรวจซ้ำ email
-  db.query('SELECT * FROM customers WHERE email = ?', [email], (err, results) => {
-    if (err) return res.status(500).send('Database error');
-
-    if (results.length > 0) {
-      return res.render('register', { error: 'Email already exists!' });
+  // 🔹 Check if email already exists
+  const checkEmailSql = 'SELECT * FROM customers WHERE email = ?';
+  db.query(checkEmailSql, [email], async (err, results) => {
+    if (err) {
+      console.error('❌ Database error:', err);
+      return res.render('register', { error: '⚠ Database error, please try again.', success: null });
     }
 
-    // 1. Insert into customers
-    const insertCustomerSql = 'INSERT INTO customers (firstname, lastname, email, phone) VALUES (?, ?, ?, ?)';
-    db.query(insertCustomerSql, [firstName, lastName, email, phone], (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send('Database insert error (customers)');
-      }
+    if (results.length > 0) {
+      return res.render('register', { error: '⚠ This email is already registered.', success: null });
+    }
 
-      const customerId = result.insertId;  // ✅ ต้องประกาศในนี้
+    try {
+      // 🔹 Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-      console.log("👉 New customerId:", customerId);
-      
-
-      // 2. Insert into accounts
-      const insertAccountSql = 'INSERT INTO accounts (customer_id, username, password, role) VALUES (?, ?, ?, ?)';
-      db.query(insertAccountSql, [customerId, username, password, 'user'], (err, result) => {
+      // 🔹 Insert into customers
+      const insertCustomerSql = `
+        INSERT INTO customers (firstname, lastname, phone, email)
+        VALUES (?, ?, ?, ?)
+      `;
+      db.query(insertCustomerSql, [firstName, lastName, phone, email], (err, customerResult) => {
         if (err) {
-          console.error("❌ Insert account error:", err);
-          return res.status(500).send('Database insert error (account): ' + err.message);
+          console.error('❌ Error inserting customer:', err);
+          return res.render('register', { error: '⚠ Failed to save customer data.', success: null });
         }
 
-        console.log("✅ Insert account success, accountId:", result.insertId);
-        res.redirect('/login');
+        const customerId = customerResult.insertId;
+
+        // 🔹 Insert into accounts
+        const insertAccountSql = `
+          INSERT INTO accounts (username, password, customer_id, role)
+          VALUES (?, ?, ?, 'user')
+        `;
+        db.query(insertAccountSql, [username, hashedPassword, customerId], (err2) => {
+          if (err2) {
+            console.error('❌ Error inserting account:', err2);
+            return res.render('register', { error: '⚠ Failed to create account.', success: null });
+          }
+
+          console.log('✅ Registration successful!');
+          res.render('register', { 
+            success: '✔ Your account has been successfully created! Redirecting to login...', 
+            error: null 
+          });
+        });
       });
-    });
+    } catch (err) {
+      console.error('🔥 bcrypt error:', err);
+      res.render('register', { error: '⚠ Something went wrong.', success: null });
+    }
   });
 });
 

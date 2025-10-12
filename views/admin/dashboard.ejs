@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Chaploy</title>
+  <link rel="stylesheet" href="/stylesheets/admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="admin-dashboard-page">
+  <%- include('../partials/admin_navbar') %>
+  <div class="dashboard-container">
+    <h1>📊 CHAPLOY ADMIN DASHBOARD</h1>
+    <p>Overview of product and employee statistics</p>
+
+    <!-- สรุปข้อมูล -->
+    <div class="stats-grid">
+      <div class="stat-card total"><h2><%= summary.totalProducts %></h2><p>Total Products</p></div>
+      <div class="stat-card active"><h2><%= summary.activeProducts %></h2><p>Active</p></div>
+      <div class="stat-card inactive"><h2><%= summary.inactiveProducts %></h2><p>Inactive</p></div>
+      <div class="stat-card coffee"><h2><%= summary.coffeeCount %></h2><p>Coffee</p></div>
+      <div class="stat-card tea"><h2><%= summary.teaCount %></h2><p>Tea</p></div>
+      <div class="stat-card employees"><h2><%= summary.employeeCount %></h2><p>Employees</p></div>
+    </div>
+
+    <!-- พื้นที่กราฟ -->
+    <div class="charts">
+      <div class="chart-box">
+        <h3>📦 Products by Category</h3>
+        <canvas id="categoryChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3>🟢 Active vs 🔴 Inactive</h3>
+        <canvas id="statusChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- สคริปต์กราฟ -->
+  <script>
+    const categoryData = {
+      labels: <%- JSON.stringify(chartData.labels) %>,
+      values: <%- JSON.stringify(chartData.values) %>
+    };
+
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(categoryCtx, {
+      type: 'bar',
+      data: {
+        labels: categoryData.labels,
+        datasets: [{
+          label: 'Number of Products',
+          data: categoryData.values,
+          backgroundColor: ['#8BC34A', '#795548', '#FFC107', '#00BCD4', '#E91E63'],
+          borderRadius: 6
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Active', 'Inactive'],
+        datasets: [{
+          data: [<%= summary.activeProducts %>, <%= summary.inactiveProducts %>],
+          backgroundColor: ['#2ecc71', '#e74c3c'],
+          borderWidth: 1
+        }]
+      },
+      options: { responsive: true }
+    });
+  </script>
+</body>
+</html>

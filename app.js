@@ -12,6 +12,9 @@ var registerRouter = require('./routes/register');
 var loginRouter = require('./routes/login');
 var contactRouter = require('./routes/contact');
 var resetRouter = require('./routes/reset');
+var adminRouter = require('./routes/admin');
+
+
 
 
 var app = express();
@@ -49,7 +52,7 @@ app.use('/Login', loginRouter);
 app.use('/Contact', contactRouter);
 app.use('/reset', resetRouter);
 app.use('/reset-password', resetRouter);
-
+app.use('/admin', adminRouter);
 
 
 // ✅ Signout

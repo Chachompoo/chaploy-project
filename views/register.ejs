@@ -1,54 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Chaploy </title>
-    <link rel="stylesheet" href="/stylesheets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Chaploy</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+
+  <style>
+    .alert-success {
+      color: #256c3a;
+      padding: 10px 18px 12px 18px;
+      margin: 10px 0 20px 0;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: 500;
+      line-height: 1.5;       
+      transform: translateY(-6px);
+      opacity: 1;
+      transition: opacity 0.5s ease-out;
+}
+
+    .alert-error {
+      color: #9b1c1c;
+      padding: 10px 18px 12px 18px;
+      margin: 10px 0 20px 0;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: 500;
+      line-height: 1.5;       
+      transform: translateY(-6px);
+      opacity: 1;
+      transition: opacity 0.5s ease-out;
+    }
+    .fade-out {
+      opacity: 0;
+    }
+  </style>
 </head>
 <body class="register-page">
-  <!-- <%- include('partials/navbar') %> -->
+  <%
+    var success = (typeof success !== 'undefined') ? success : null;
+    var error = (typeof error !== 'undefined') ? error : null;
+  %>
+
   <div class="register-main-container">
     <div class="register-form-box">
-      <div class="register-background-box"></div>
-      <h2>REGISTRATION</h2>
+      <h2>Create Your Account</h2>
+
+      <% if (success) { %>
+        <div class="alert-success">
+          <%= success %>
+          <br>
+          <span id="countdown">Redirecting in 5 seconds...</span>
+        </div>
+        <script>
+          let seconds = 5;
+          const countdownEl = document.getElementById("countdown");
+          const alertBox = document.querySelector(".alert-success");
+          const timer = setInterval(() => {
+            seconds--;
+            countdownEl.textContent = `Redirecting in ${seconds} seconds...`;
+            if (seconds <= 0) {
+              clearInterval(timer);
+              alertBox.classList.add("fade-out");
+              setTimeout(() => window.location.href = "/login", 500);
+            }
+          }, 1000);
+        </script>
+      <% } %>
+
+      <% if (error) { %>
+        <div class="alert-error"><%= error %></div>
+      <% } %>
+
       <form action="/register" method="POST" class="register-form">
         <div class="register-input-group">
-          <input type="text" id="firstName" name="firstName" placeholder=" " required>
-          <label for="firstName">FIRST NAME *</label>
+          <input type="text" name="firstName" placeholder=" " required>
+          <label>First Name</label>
         </div>
-
         <div class="register-input-group">
-          <input type="text" id="lastName" name="lastName" placeholder=" " required>
-          <label for="lastName">LAST NAME *</label>
+          <input type="text" name="lastName" placeholder=" " required>
+          <label>Last Name</label>
         </div>
-
         <div class="register-input-group">
-          <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder=" " required>
-          <label for="phone">PHONE NUMBER *</label>
+          <input type="email" name="email" placeholder=" " required>
+          <label>Email</label>
         </div>
-
         <div class="register-input-group">
-          <input type="email" id="email" name="email" placeholder=" " required>
-          <label for="email">EMAIL ADDRESS *</label>
+          <input type="text" name="phone" placeholder=" " required>
+          <label>Phone</label>
         </div>
-
         <div class="register-input-group">
-          <input type="text" id="username" name="username" placeholder=" " required>
-          <label for="username">USERNAME *</label>
+          <input type="text" name="username" placeholder=" " required>
+          <label>Username</label>
         </div>
-
         <div class="register-input-group">
-          <input type="password" id="password" name="password" placeholder=" " required>
-          <label for="password">PASSWORD *</label>
+          <input type="password" name="password" placeholder=" " required>
+          <label>Password</label>
         </div>
 
         <button type="submit" class="register-submit-button">REGISTER</button>
-      </form>
 
-      <p class="register-login-link">Already have an account? <a href="/login"> Login here</a></p>
+        <div class="register-login-link">
+          Already have an account? <a href="/login">Login here</a>
+        </div>
+      </form>
     </div>
   </div>
 </body>
-
 </html>
