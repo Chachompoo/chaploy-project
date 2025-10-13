@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/stylesheets/navbar.css">
+  <link rel="stylesheet" href="/stylesheets/product.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="product-page">
+    <div class="product-left">
+      <img src="<%= product.image %>" alt="<%= product.name %>">
+    </div>
+
+    <div class="product-right">
+      <h1><%= product.name %></h1>
+      <p class="price">$<%= product.price %></p>
+
+      <% if (product.stock == 0) { %>
+        <p class="out">OUT OF STOCK</p>
+      <% } else { %>
+        <form id="addToCartForm">
+          <input type="hidden" name="productId" value="<%= product.id %>">
+          <button type="submit" class="add-cart-btn">ADD TO CART</button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+  document.getElementById("addToCartForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const productId = formData.get("productId");
+
+    const res = await fetch("/shop/cart/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productId })
+    });
+
+    if (res.status === 401) {
+  alert("Please login before adding items to your basket.");
+  window.location.href = "/login";
+  return;
+}
+
+const data = await res.json();
+if (data.loginRequired) {
+  window.location.href = "/login";
+  return;
+}
+
+    if (data.success) {
+  document.getElementById("basketCount").textContent = data.count;
+}
+  });
+</script>
+
+</body>
+</html>

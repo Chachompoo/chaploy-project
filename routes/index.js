@@ -16,4 +16,13 @@ router.get('/register', function(req, res, next) {
   res.render('register'); // Render the register.ejs file
 });
 
+router.get('/', (req, res) => {
+  res.render('index', {
+    title: 'Chaploy',
+    user: req.session.user || null,
+    cartCount: (req.session.cart || []).reduce((sum, i) => sum + i.qty, 0)
+  });
+});
+
+
 module.exports = router;

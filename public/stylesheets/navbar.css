@@ -11,10 +11,94 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 50px;
+    padding: 18px 50px;
     background-color: #f2f3ef;
     border-bottom: 1px solid #999995
 }
+
+
+/* Mega menu */
+.dropdown-mega {
+  position: relative;
+}
+
+.mega-menu {
+  display: none; /* ซ่อนไว้ก่อน */
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0;
+  width: 900px;
+  background: #f5f4f1;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 20px 40px;
+  gap: 40px;
+  z-index: 999;
+  transition: all 0.3s ease; /* เพิ่ม transition ให้นุ่ม */
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+  background: rgba(245, 244, 241, 0.98);
+  border-top: 2px solid #e4e4e0; /* เส้นแบ่งบน */
+}
+
+
+.dropdown-mega:hover .mega-menu {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition: all 0.3s ease;
+}
+
+.mega-col {
+  flex: 1;
+}
+
+.mega-col h4 {
+  font-family: "Quicksand", sans-serif;
+  font-size: 18px;
+  color: #333;
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+}
+
+.mega-col a {
+  text-decoration: none;
+  color: #4e4f4e;
+  font-size: 16px;
+  display: block;
+  margin: 5px 0;
+  transition: color 0.3s ease;
+}
+
+.mega-col a:hover {
+  color: #777;
+}
+
+.new-item img {
+  width: 100%;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+
+
+/* New Arrivals */
+.new-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.new-item img {
+  width: 100%;
+  max-width: 150px;
+  border-radius: 4px;
+}
+
 
 .navbar-left,
 .navbar-right {

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/stylesheets/products.css">
+  <link rel="stylesheet" href="/stylesheets/navbar.css">
+</head>
+<body class="all-products-page">
+
+  <%- include('../partials/navbar') %>
+
+  <!-- Filter Bar -->
+  <section class="filter-bar">
+    <a href="/shop/all" class="active">ALL</a>
+    <a href="/shop/category/mockups">MOCKUPS</a>
+    <a href="/shop/category/canva">CANVA TEMPLATES</a>
+  </section>
+
+  <!-- Product Grid -->
+  <section class="product-grid">
+  <% if (products.length === 0) { %>
+    <p class="no-products">No products found.</p>
+  <% } else { %>
+    <% products.forEach(p => { %>
+      <div class="product-card">
+        <a href="/shop/product/<%= p.id %>">
+          <div class="image-container">
+            <img src="<%= p.image %>" alt="<%= p.name %>">
+
+
+             <% if (p.stock == 0) { %><div class="overlay out-of-stock">OUT OF STOCK</div>
+             <div class="overlay out-of-stock">OUT OF STOCK</div>
+            <% } else if (p.status !== 'active') { %>
+              <div class="overlay not-available">NOT AVAILABLE</div>
+            <% } %>
+
+          </div>
+          <h3><%= p.name %></h3>
+          <p class="price">$<%= p.price %></p>
+        </a>
+      </div>
+    <% }) %>
+  <% } %>
+</section>
+
+
+</body>
+</html>
+

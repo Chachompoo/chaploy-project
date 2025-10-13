@@ -1,11 +1,15 @@
+// ================================
+// 🌿 CHAPLOY — Main App.js
+// ================================
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
-var session = require('express-session');
 
+// --- Routers ---
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var registerRouter = require('./routes/register');
@@ -13,51 +17,81 @@ var loginRouter = require('./routes/login');
 var contactRouter = require('./routes/contact');
 var resetRouter = require('./routes/reset');
 var adminRouter = require('./routes/admin');
+var shopRouter = require('./routes/shop');
 
+// --- Middlewares ---
+var cartCount = require('./middleware/cartCount');
+var cartCookie = require('./middleware/cartCookie');
+const { setupSession, setUser } = require('./middleware/sessionUser');
+const navbarData = require('./middleware/navbarData');
 
-
-
+// --- App Init ---
 var app = express();
 
-// --- ตั้งค่า Middleware ---
+// ================================
+// 🧩 GLOBAL MIDDLEWARE
+// ================================
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// ✅ Serve static files (CSS / JS / Images)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ✅ ต้องมาก่อน routes ทั้งหมด
-app.use(session({
-  secret: 'chaploy-secret-key',
-  resave: false,
-  saveUninitialized: false
-}));
+// ================================
+// 🧠 SESSION & USER HANDLING
+// ================================
+app.use(setupSession);
+app.use(setUser);
 
-// ✅ ทำให้ `user` ใช้ได้ในทุก ejs
-app.use((req, res, next) => {
-  res.locals.user = req.session.user || null;
+// ✅ Load cart from cookies (safe)
+app.use(cartCookie);
+
+// ✅ Count cart items
+app.use(cartCount);
+
+// ✅ Ensure categories available everywhere
+app.use(async (req, res, next) => {
+  if (!res.locals.categories) res.locals.categories = [];
   next();
 });
 
-// view engine setup
+// ✅ Navbar categories
+app.use(navbarData);
+
+// ================================
+// 🎨 VIEW ENGINE
+// ================================
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// --- routes ---
+// ================================
+// 🚏 ROUTES
+// ================================
 app.use('/', indexRouter);
-app.use('/Users', usersRouter);
-app.use('/Register', registerRouter);
-app.use('/Login', loginRouter);
-app.use('/Contact', contactRouter);
+app.use('/users', usersRouter);
+app.use('/register', registerRouter);
+app.use('/login', loginRouter);
+app.use('/contact', contactRouter);
 app.use('/reset', resetRouter);
-app.use('/reset-password', resetRouter);
 app.use('/admin', adminRouter);
+app.use('/shop', shopRouter);
 
+// ================================
+// 🧹 DEBUG TOOL (optional)
+// ================================
+app.get('/debug/clear-cart-cookie', (req, res) => {
+  res.clearCookie('savedCart');
+  res.send('✅ cleared savedCart cookie');
+});
 
-// ✅ Signout
+// ================================
+// 🚪 SIGN OUT
+// ================================
 app.get('/signout', (req, res) => {
-  req.session.destroy((err) => {
+  req.session.destroy(err => {
     if (err) {
       console.error(err);
       return res.redirect('/');
@@ -67,13 +101,14 @@ app.get('/signout', (req, res) => {
   });
 });
 
-// catch 404
-app.use(function(req, res, next) {
+// ================================
+// ❌ ERROR HANDLING
+// ================================
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
-// error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.status(err.status || 500);

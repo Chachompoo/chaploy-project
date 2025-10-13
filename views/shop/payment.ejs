@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment - Chaploy</title>
+  <link rel="stylesheet" href="/stylesheets/products.css?v=<%= Date.now() %>">
+</head>
+<body class="payment-page">
+  <%- include('../partials/navbar') %>
+
+  <div class="payment-container">
+    <h2>Upload Payment Slip</h2>
+
+    <form action="/shop/payment/<%= order.id %>" method="POST" enctype="multipart/form-data">
+      <div class="payment-info">
+        <p><strong>Order ID:</strong> <%= order.id %></p>
+        <p><strong>Total Amount:</strong> ฿<%= order.total.toLocaleString() %></p>
+      </div>
+
+      <div class="form-group">
+        <label for="amount">Amount Paid:</label>
+        <input type="number" name="amount" id="amount" value="<%= order.total %>" readonly>
+      </div>
+
+      <div class="form-group">
+        <label for="method">Payment Method:</label>
+        <select name="method" id="method" required>
+          <option value="bank">Bank Transfer</option>
+          <option value="credit">Credit Card</option>
+          <option value="paypal">PayPal</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="slip">Upload Slip:</label>
+        <input type="file" name="slip" id="slip" accept="image/*" required>
+      </div>
+
+      <button type="submit" class="btn-pay">Submit Payment</button>
+    </form>
+  </div>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

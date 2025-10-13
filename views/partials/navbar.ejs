@@ -9,7 +9,7 @@
 <body>
 <nav class="navbar">
   <div class="navbar-left">
-    <a href="/" class="nav-link">SHOP</a>
+    <a href="/shop/all" class="nav-link">SHOP</a>
     <a href="/about" class="nav-link">ABOUT</a>
     <a href="/free" class="nav-link">FREE</a>
   </div>
@@ -37,8 +37,18 @@
   <% } else { %>
     <a href="/login" class="nav-link">LOGIN</a>
   <% } %>
-  <a href="/basket" class="nav-link">BASKET (0)</a>
-</div>
-</nav>
+  <a href="/shop/basket" class="nav-link">
+    BASKET (<span id="basketCount"><%= cartCount || 0 %></span>)</a>
+    </a>
+    </div>
+    </nav>
+    <script>
+      // 🟢 ตรวจจับว่ากลับมาจาก history (เช่น กดย้อนกลับ)
+      window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+          window.location.reload();
+          }
+          });
+    </script>
 </body>
 </html>

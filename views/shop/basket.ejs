@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | Chaploy</title>
+  <link rel="stylesheet" href="/stylesheets/navbar.css">
+  <link rel="stylesheet" href="/stylesheets/basket.css">
+
+  <!-- ✅ ใส่ SweetAlert2 ไว้ใน <head> -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="basket-container">
+    <h1>Your Basket</h1>
+
+    <% if (products.length === 0) { %>
+      <p class="empty">Your basket is currently empty.</p>
+    <% } else { %>
+      <div class="basket-list">
+        <% products.forEach(p => { %>
+          <div class="basket-item" data-id="<%= p.id %>">
+            <img src="<%= p.image %>" alt="<%= p.name %>">
+            
+            <div class="info">
+              <h3><%= p.name %></h3>
+              <p class="price">$<%= Number(p.price).toFixed(2) %></p>
+              <!-- ✅ เพิ่มข้อความแสดง stock -->
+              <p class="stock-text">In stock: <%= p.stock %></p>
+            </div>
+
+            <!-- ✅ ปุ่ม - / + -->
+            <div class="qty-controls">
+              <button class="qty-btn minus" data-id="<%= p.id %>">-</button>
+              <span class="qty-value"><%= p.qty %></span>
+              <button class="qty-btn plus" data-id="<%= p.id %>">+</button>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <div class="basket-summary">
+        <h2>Total: $<%= total.toFixed(2) %></h2>
+        <button class="checkout-btn">PROCEED TO CHECKOUT</button>
+      </div>
+    <% } %>
+  </div>
+
+  <script>
+document.querySelectorAll(".qty-btn").forEach(btn => {
+  btn.addEventListener("click", async (e) => {
+    const id = e.target.dataset.id;
+    const action = e.target.classList.contains("plus") ? "plus" : "minus";
+    console.log("🟢 Click:", id, action); // <--- เพิ่ม log ไว้เช็ก
+
+    try {
+      const res = await fetch("/shop/cart/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: id, action })
+      });
+
+      console.log("🟡 Response status:", res.status); // เพิ่ม log
+
+      const resData = await res.json();
+      console.log("🟢 Response data:", resData);
+
+      if (resData.success) {
+        location.reload();
+      } else {
+        Swal.fire({
+          icon: resData.message === "Out of stock" ? "warning" : "error",
+          title: resData.message === "Out of stock" ? "สินค้าหมดสต็อก!" : "เกิดข้อผิดพลาด",
+          text: resData.message || "กรุณาลองใหม่อีกครั้งค่ะ",
+          confirmButtonColor: "#000"
+        });
+      }
+    } catch (err) {
+      console.error("❌ Fetch error:", err);
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: "ไม่สามารถติดต่อเซิร์ฟเวอร์ได้ค่ะ",
+        confirmButtonColor: "#000"
+      });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

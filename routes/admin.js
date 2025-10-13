@@ -38,7 +38,7 @@ router.get('/products', checkAdmin, (req, res) => {
 
   db.query(sql, [search, search], (err, products) => {
     if (err) throw err;
-    res.render('admin/products', { products, q: req.query.q || '' });
+    res.render('admin/products_list', { products, q: req.query.q || '' });
   });
 });
 
