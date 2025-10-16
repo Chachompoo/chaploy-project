@@ -1,28 +1,30 @@
 <nav class="admin-navbar">
   <div class="navbar-left">
-  <a href="/admin" class="nav-logo">
-    <img src="/images/Chaploy-remove.png" alt="Chaploy Logo" class="admin-logo">
-    <span>CHAPLOY ADMIN</span>
-  </a>
-</div>
+    <a href="/admin" class="nav-logo">
+      <img src="/images/Chaploy-removebg.png" alt="Chaploy Logo" class="admin-logo">
+      <span>CHAPLOY ADMIN</span>
+    </a>
+  </div>
 
   <div class="navbar-center">
     <a href="/admin/dashboard" class="nav-link">Dashboard</a>
     <a href="/admin/products" class="nav-link">Products</a>
+    <a href="/admin/orders" class="nav-link">Orders</a>
+    <a href="/admin/payments" class="nav-link">Payments</a>
     <a href="/admin/employee" class="nav-link">Employees</a>
   </div>
 
   <div class="navbar-right">
-  <div class="user-dropdown">
-    <button class="user-btn">
-      <img src="/icons/user.png" alt="User Icon" class="user-icon">
-      <span><%= user ? user.username : "Admin" %></span>
-      <i class="arrow-down"></i>
-    </button>
+    <div class="user-dropdown">
+      <button class="user-btn">
+        <img src="/icons/user.png" alt="User Icon" class="user-icon">
+        <span><%= user ? user.username : "Admin" %></span>
+        <i class="arrow-down"></i>
+      </button>
 
-    <div class="dropdown-content">
-      <a href="/admin/logout" class="logout-link">Logout</a>
+      <div class="dropdown-content">
+        <a href="/admin/logout" class="logout-link">Logout</a>
+      </div>
     </div>
   </div>
-</div>
 </nav>

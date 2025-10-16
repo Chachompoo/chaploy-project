@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order <%= String(order.id).padStart(4, '0') %> - Chaploy Admin</title>
+
+  <!-- 🌿 ฟ้อนต์นุ่ม ๆ เหมือนหน้าอื่น -->
+  <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/stylesheets/admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body class="admin-order-detail">
+  <%- include('../partials/admin_navbar') %>
+
+  <div class="order-detail-container">
+    <h2>Order <%= String(order.id).padStart(4, '0') %></h2>
+
+    <!-- 🧍 Customer Info -->
+    <div class="customer-info">
+      <p><strong>Customer:</strong> <%= order.firstname || '' %> <%= order.lastname || '' %></p>
+      <p><strong>Email:</strong> <%= order.email %></p>
+      <p><strong>Phone:</strong> <%= order.phone %></p>
+      <p><strong>Address:</strong> <%= order.shipping_address %></p>
+      <p><strong>Payment Status:</strong> <%= order.payment_status %></p>
+      <p><strong>Order Status:</strong> <%= order.order_status %></p>
+    </div>
+
+    <!-- 📦 Items -->
+    <h3 class="section-title">Order Items</h3>
+    <table class="order-items">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% items.forEach(it => { %>
+          <tr>
+            <td><%= it.name %></td>
+            <td><%= it.quantity %></td>
+            <td>฿<%= Number(it.price_each || 0).toFixed(2) %></td>
+            <td>฿<%= Number(it.subtotal || 0).toFixed(2) %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <div class="order-total">
+      <p><strong>Total:</strong> ฿<%= Number(order.total || 0).toFixed(2) %></p>
+    </div>
+
+    <% if (order.slip_image) { %>
+      <div class="payment-slip">
+        <h3 class="section-title">Payment Slip</h3>
+        <img src="<%= order.slip_image %>" alt="Slip">
+      </div>
+    <% } %>
+
+    <form id="updateForm" class="update-form">
+      <label for="status">Update Order Status:</label>
+      <select id="status" name="status">
+        <option value="pending" <%= order.order_status === 'pending' ? 'selected' : '' %>>Pending</option>
+        <option value="confirmed" <%= order.order_status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+        <option value="shipped" <%= order.order_status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+        <option value="delivered" <%= order.order_status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+        <option value="cancelled" <%= order.order_status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+      </select>
+      <button type="submit">Update</button>
+    </form>
+  </div>
+
+  <script>
+    document.querySelector('#updateForm').addEventListener('submit', e=>{
+      e.preventDefault();
+      const status = document.querySelector('#status').value;
+      fetch('/admin/orders/update/<%= order.id %>', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      })
+      .then(r=>r.json())
+      .then(data=>{
+        if(data.success){
+          Swal.fire('✅ Updated!','Order status updated successfully.','success')
+            .then(()=>location.reload());
+        } else {
+          Swal.fire('Error','Update failed.','error');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

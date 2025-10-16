@@ -629,6 +629,34 @@ body.admin-products {
   color: rgba(100,100,100,0.6);
 }
 
+.product-table tr {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.product-table tr[style*="display: none"] {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+/* ✨ ข้อความ No products found */
+/* ✨ แถวแจ้งเตือนเมื่อไม่พบสินค้า */
+.no-data-row td {
+  text-align: center;
+  padding: 25px;
+  color: #555;
+  font-size: 17px;
+  font-weight: 500;
+  background: #fff;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+
+.no-data-row[style*="display: block"],
+.no-data-row[style*="display:"] {
+  opacity: 1;
+}
+
+
 /* 🔍 Search Button */
 .product-search-glass button {
   all: unset;
@@ -756,6 +784,28 @@ body.admin-products {
   transform: translateY(-2px);
 }
 
+/* สินค้า inactive ทั้งแถวจางลง */
+.inactive-row {
+  opacity: 0.6;
+  background-color: #fff5f5; /* แดงอ่อนมาก */
+  transition: opacity 0.2s, background-color 0.3s;
+}
+
+.inactive-row:hover {
+  opacity: 1;
+  background-color: #ffeeee;
+}
+
+/* ป้ายสถานะข้างชื่อ */
+.inactive-label {
+  color: #c23b3b;
+  font-size: 15px;
+  margin-left: 6px;
+  opacity: 0.8;
+}
+
+
+
 
 /* ============= 4. ADMIN DASHBOARD ============= */
 body.admin-dashboard-page {
@@ -834,6 +884,20 @@ body.admin-dashboard-page {
   margin-bottom: 15px;
   color: #2e7d5e;
 }
+
+/* 💫 เอฟเฟกต์ fade ตอนค้นหาในหน้า Products */
+.product-table tr {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.product-table tr[style*="display: none"] {
+  opacity: 0;
+  transform: scale(0.98);
+}
+.no-data-row {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
 
 /* ============= 5. MANAGE EMPLOYEES ============= */
 
@@ -1033,3 +1097,517 @@ body.admin-employee-page {
 }
 .btn-save-admin:hover { background: #27ae60; }
 .btn-cancel-admin:hover { background: #c0392b; }
+
+/* ============= 4. ORDER LIST ============= */
+body.admin-orders {
+  background: linear-gradient(180deg, #e0fce4 0%, #edf7f2 40%, #e9f9ef 100%);
+}
+
+/* 🌿 Order Container */
+.order-list-container {
+  padding: 40px;
+  text-align: center;
+}
+
+.order-list-container h2 {
+  font-size: 40px;
+  color: #2e7d5e;
+  margin-bottom: 40px;
+}
+
+/* 🔍 Search bar (glass style like product list) */
+.order-search-glass {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 550px;
+  max-width: 100%;
+  margin: 0 auto 35px auto;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  padding: 8px 14px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  transition: 0.3s ease;
+}
+
+.order-search-glass:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: scale(1.02);
+}
+
+.order-search-glass input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #333;
+  font-size: 16px;
+  padding: 8px 14px;
+  font-family: "Geologica", sans-serif;
+}
+
+.order-search-glass input::placeholder {
+  color: rgba(100,100,100,0.6);
+}
+
+.order-search-glass button {
+  all: unset;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #2e7d5e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.order-search-glass button:hover {
+  background: #379e76;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.25);
+}
+
+.order-search-glass button img {
+  width: 20px;
+  height: 20px;
+  filter: invert(1);
+}
+
+/* 📋 Table style */
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.order-table th, .order-table td {
+  border: 1px solid #eee;
+  padding: 10px 8px;
+  text-align: center;
+  transition: background-color 0.2s ease;
+  vertical-align: middle;
+}
+
+.order-table th {
+  background: #f4f4f4;
+  color: #2e7d5e;
+  font-weight: 600;
+}
+
+/* 💫 เอฟเฟกต์ fade ตอนค้นหาในหน้า Orders */
+.order-table tr {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.order-table tr[style*="display: none"] {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+
+.order-table tr:hover {
+  background-color: rgba(46, 125, 94, 0.05);
+}
+
+/* 💸 Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-badge.paid {
+  background-color: #d8f8d8;
+  color: #208a3f;
+}
+
+.status-badge.pending {
+  background-color: #fff2cc;
+  color: #a07800;
+}
+
+.status-badge.cancelled {
+  background-color: #ffe0e0;
+  color: #b10000;
+}
+
+/* ⚙️ Action button */
+.order-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-view {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: 0.25s;
+  color: white;
+  background: #2e7d5e;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.btn-view:hover {
+  background: #379e76;
+  transform: translateY(-2px);
+}
+
+/* ไม่มีข้อมูล */
+.no-data {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  padding: 20px;
+}
+
+/* =============== PAYMENTS PAGE =============== */
+
+body.admin-payments {
+  background: linear-gradient(180deg, #e0fce4 0%, #edf7f2 40%, #e9f9ef 100%);
+}
+
+/* Container */
+.payment-list-container {
+  padding: 40px;
+  text-align: center;
+}
+
+.payment-list-container h2 {
+  font-size: 40px;
+  color: #2e7d5e;
+  margin-bottom: 40px;
+}
+
+/* Search bar glass style */
+.payment-search-glass {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 550px;
+  max-width: 100%;
+  margin: 0 auto 35px auto;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  padding: 8px 14px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  transition: 0.3s ease;
+}
+
+.payment-search-glass:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: scale(1.02);
+}
+
+.payment-search-glass input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #333;
+  font-size: 16px;
+  padding: 8px 14px;
+  font-family: "Geologica", sans-serif;
+}
+
+.payment-search-glass input::placeholder {
+  color: rgba(100,100,100,0.6);
+}
+
+.payment-search-glass button {
+  all: unset;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #2e7d5e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.payment-search-glass button:hover {
+  background: #379e76;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.25);
+}
+
+.payment-search-glass button img {
+  width: 20px;
+  height: 20px;
+  filter: invert(1);
+}
+
+/* 📋 Table style */
+.payment-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.payment-table th, .payment-table td {
+  border: 1px solid #eee;
+  padding: 10px 8px;
+  text-align: center;
+  transition: background-color 0.2s ease;
+  vertical-align: middle;
+}
+
+.payment-table th {
+  background: #f4f4f4;
+  color: #2e7d5e;
+  font-weight: 600;
+}
+
+.payment-table tr:hover {
+  background-color: rgba(46, 125, 94, 0.05);
+}
+
+/* 💬 Status badges */
+.status-badge.paid {
+  background-color: #d8f8d8;
+  color: #208a3f;
+}
+
+.status-badge.pending {
+  background-color: #fff2cc;
+  color: #a07800;
+}
+
+.status-badge.cancelled {
+  background-color: #ffe0e0;
+  color: #b10000;
+}
+
+/* 🔘 Buttons */
+.btn-view-slip {
+  background: #3498db;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.btn-view-slip:hover {
+  background: #2c80bf;
+}
+
+.btn-verify {
+  background: #2e7d5e;
+  color: white;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.btn-verify:hover {
+  background: #379e76;
+}
+
+.btn-verified {
+  background: #999;
+  color: white;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: not-allowed;
+}
+
+.no-data {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  padding: 20px;
+}
+
+/* 💫 ให้ทุกตารางในหน้า admin จางตอนกรองข้อมูล */
+table tr {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+table tr[style*="display: none"] {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+/* ==============================
+   🌿 ORDER DETAIL PAGE (Smooth Font)
+============================== */
+body.admin-order-detail {
+  background: linear-gradient(180deg, #e8f8ef, #ffffff);
+  font-family: "Geologica", "Quicksand", sans-serif;
+  color: #2e4d39;
+  padding-bottom: 50px;
+  letter-spacing: 0.2px;
+}
+
+.order-detail-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 35px 45px;
+  border-radius: 22px;
+  box-shadow: 0 5px 18px rgba(0,0,0,0.1);
+  animation: fadeIn 0.4s ease;
+  line-height: 1.6;
+}
+
+.order-detail-container h2 {
+  text-align: center;
+  font-family: "Geologica", sans-serif;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #165b3a;
+  letter-spacing: 0.5px;
+}
+
+.section-title {
+  font-family: "Geologica", sans-serif;
+  color: #165b3a;
+  margin-top: 25px;
+  font-weight: 600;
+}
+
+.customer-info {
+  background: #f6fbf8;
+  border-radius: 14px;
+  padding: 22px 28px;
+  margin-bottom: 25px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.04);
+}
+
+.customer-info p {
+  margin: 6px 0;
+  font-size: 15.5px;
+  font-family: "Quicksand", sans-serif;
+}
+
+.customer-info strong {
+  color: #165b3a;
+  min-width: 130px;
+  display: inline-block;
+}
+
+/* 📦 Table */
+table.order-items {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-family: "Quicksand", sans-serif;
+}
+
+table.order-items th, 
+table.order-items td {
+  border-bottom: 1px solid #eee;
+  padding: 12px 8px;
+  text-align: center;
+  transition: 0.2s ease;
+}
+
+table.order-items th {
+  background: #e9f8ef;
+  color: #165b3a;
+  font-weight: 600;
+  font-family: "Geologica", sans-serif;
+}
+
+table.order-items tr:hover {
+  background: #f9fefb;
+  transform: scale(1.01);
+}
+
+.order-total {
+  text-align: right;
+  margin-top: 25px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #165b3a;
+  font-family: "Geologica", sans-serif;
+}
+
+/* 🧾 Slip */
+.payment-slip {
+  text-align: center;
+  margin: 35px 0;
+}
+
+.payment-slip img {
+  border-radius: 18px;
+  max-width: 280px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+  transition: transform 0.25s ease;
+}
+
+.payment-slip img:hover {
+  transform: scale(1.05);
+}
+
+/* ⚙️ Update Form */
+.update-form {
+  text-align: center;
+  margin-top: 35px;
+  font-family: "Geologica", sans-serif;
+}
+
+.update-form label {
+  font-weight: 600;
+  color: #165b3a;
+  margin-right: 10px;
+  font-size: 16px;
+  font-family: "Quicksand", sans-serif;
+}
+
+.update-form select {
+  padding: 9px 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  margin-right: 10px;
+  font-family: "Quicksand", sans-serif;
+}
+
+.update-form button {
+  background: linear-gradient(135deg, #2e7d5e, #379e76);
+  color: #fff;
+  margin-top: 20px;
+  padding: 9px 20px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: "Geologica", sans-serif;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.update-form button:hover {
+  background: linear-gradient(135deg, #379e76, #2e7d5e);
+  transform: translateY(-2px);
+}
+

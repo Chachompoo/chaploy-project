@@ -12,55 +12,117 @@
   <h2>Product List</h2>
 
   <!--  Glass Search + Add -->
-  <form action="/admin/products" method="get" class="product-search-glass">
-    <input type="text" name="q" placeholder="Search product..." value="<%= q %>" autocomplete="off">
-    <button type="submit"><img src="/icons/search.png" alt="search"></button>
-    <a href="/admin/products/add" class="btn-product-add">+ Add</a>
-  </form>
+<form action="/admin/products" method="get" class="product-search-glass" onsubmit="return false;">
+  <input type="text" id="productSearch" placeholder="Search product..." autocomplete="off">
+  <button type="button"><img src="/icons/search.png" alt="search"></button>
+  <a href="/admin/products/add" class="btn-product-add">+ Add</a>
+</form>
 
-  <!--  Product Table -->
-  <table class="product-table">
-    <thead>
-      <tr>
-        <th>No.</th>
-        <th>Image</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Price (฿)</th>
-        <th>Stock</th>
-        <th>Created By</th>
-        <th>Created At</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if (products.length === 0) { %>
-        <tr><td colspan="9" class="no-data">No products found</td></tr>
-      <% } else { %>
-        <% products.forEach((p, i) => { %>
-          <tr>
-            <td><%= i + 1 %></td>
-            <td>
-              <% if (p.image) { %>
-                <img src="<%= p.image %>" class="product-thumb">
-              <% } else { %>-<% } %>
-            </td>
-            <td><%= p.name %></td>
-            <td><%= p.category_name || '-' %></td>
-            <td><%= Number(p.price).toFixed(2) %></td>
-            <td><%= p.stock %></td>
-            <td><%= p.created_by_name || '-' %></td>
-            <td><%= p.created_at ? new Date(p.created_at).toLocaleString() : '-' %></td>
-            <td class="actions">
-              <a href="/admin/products/edit/<%= p.id %>" class="btn-edit">Edit</a>
-              <a href="/admin/products/delete/<%= p.id %>" class="btn-delete"
-                 onclick="return confirm('Are you sure you want to delete this product?')">Delete</a>
-            </td>
-          </tr>
-        <% }) %>
-      <% } %>
-    </tbody>
-  </table>
+<!--  Product Table -->
+<table class="product-table">
+  <thead>
+    <tr>
+      <th>No.</th>
+      <th>Image</th>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Price (฿)</th>
+      <th>Stock</th>
+      <th>Created By</th>
+      <th>Created At</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="productTableBody">
+    <% if (products.length === 0) { %>
+      <tr><td colspan="9" class="no-data">No products found</td></tr>
+    <% } else { %>
+      <% products.forEach((p, i) => { %>
+        <tr class="<%= p.status === 'inactive' ? 'inactive-row' : '' %>">
+          <td><%= i + 1 %></td>
+          <td>
+            <% if (p.image) { %>
+              <img src="<%= p.image %>" class="product-thumb">
+            <% } else { %>-<% } %>
+          </td>
+          <td>
+            <%= p.name %>
+            <% if (p.status === 'inactive') { %>
+              <span class="inactive-label">(Not for sale)</span>
+            <% } %>
+          </td>
+          <td><%= p.category_name || '-' %></td>
+          <td><%= Number(p.price).toFixed(2) %></td>
+          <td><%= p.stock %></td>
+          <td><%= p.created_by_name || '-' %></td>
+          <td><%= p.created_at ? new Date(p.created_at).toLocaleString() : '-' %></td>
+          <td class="actions">
+            <a href="/admin/products/edit/<%= p.id %>" class="btn-edit">Edit</a>
+            <a href="/admin/products/delete/<%= p.id %>" class="btn-delete"
+               onclick="return confirm('Are you sure you want to delete this product?')">Delete</a>
+          </td>
+        </tr>
+      <% }) %>
+    <% } %>
+  </tbody>
+</table>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("productSearch");
+  const tbody = document.getElementById("productTableBody");
+
+  // 🧩 ดึงเฉพาะแถวสินค้าจริง
+  let rows = Array.from(tbody.querySelectorAll("tr")).filter(
+    r => !r.classList.contains("no-data-row")
+  );
+
+  // 🧩 แถว "No products found"
+  let noDataRow = tbody.querySelector(".no-data-row");
+  if (!noDataRow) {
+    noDataRow = document.createElement("tr");
+    noDataRow.className = "no-data-row";
+    noDataRow.innerHTML = `<td colspan="9" class="no-data">No products found</td>`;
+    noDataRow.style.display = "none";
+    tbody.appendChild(noDataRow);
+  }
+
+  // 🪄 ใส่ transition ให้ทุกแถว (รวม inactive)
+  rows.forEach(row => {
+    row.style.transition = "opacity 0.25s ease, transform 0.25s ease";
+  });
+
+  // 🔍 ฟังก์ชันค้นหาแบบ fade
+  searchInput.addEventListener("input", () => {
+    const val = searchInput.value.toLowerCase().trim();
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      const name = row.children[2]?.textContent.toLowerCase() || "";
+      const category = row.children[3]?.textContent.toLowerCase() || "";
+      const createdBy = row.children[6]?.textContent.toLowerCase() || "";
+      const match = name.includes(val) || category.includes(val) || createdBy.includes(val);
+
+      if (match) {
+        // ✅ แสดงแบบ fade in
+        row.style.display = "";
+        setTimeout(() => {
+          row.style.opacity = "1";
+          row.style.transform = "scale(1)";
+        }, 10);
+        visibleCount++;
+      } else {
+        // ❌ ซ่อนแบบ fade out
+        row.style.opacity = "0";
+        row.style.transform = "scale(0.98)";
+        setTimeout(() => {
+          row.style.display = "none";
+        }, 200);
+      }
+    });
+  });
+});
+</script>
+
 </body>
 </html>

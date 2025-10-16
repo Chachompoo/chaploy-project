@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Orders - Chaploy Admin</title>
+  <link rel="stylesheet" href="/stylesheets/admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="admin-orders">
+  <%- include('../partials/admin_navbar') %>
+
+  <div class="order-list-container">
+    <h2>Manage Orders</h2>
+
+    <!-- 🔍 Glass Search -->
+    <form action="/admin/orders" method="get" class="order-search-glass">
+      <input type="text" name="q" placeholder="Search order, customer, or email..." value="<%= q || '' %>" autocomplete="off">
+      <button type="submit"><img src="/icons/search.png" alt="search"></button>
+    </form>
+
+    <!-- 📋 Order Table -->
+    <table class="order-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Email</th>
+          <th>Total</th>
+          <th>Payment</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (orders.length === 0) { %>
+          <tr><td colspan="8" class="no-data">No orders found</td></tr>
+        <% } else { %>
+          <% orders.forEach(o => { %>
+            <tr>
+              <td><%= String(o.order_id).padStart(4, '0') %></td>
+              <td><%= o.firstname || '' %> <%= o.lastname || '' %></td>
+              <td><%= o.email || '-' %></td>
+              <td>$<%= parseFloat(o.total || 0).toFixed(2) %></td>
+
+              <!-- 🟢 Payment -->
+              <td>
+                <% if (o.payment_status === 'paid') { %>
+                  <span class="status-badge paid">Paid</span>
+                <% } else if (o.payment_status === 'pending') { %>
+                  <span class="status-badge pending">Pending</span>
+                <% } else { %>
+                  <span class="status-badge cancelled">Cancelled</span>
+                <% } %>
+              </td>
+
+              <!-- 📦 Order status -->
+              <td><%= o.order_status || '-' %></td>
+
+              <td><%= o.created_at || '—' %></td>
+
+              <td class="order-actions">
+                <a href="/admin/orders/<%= o.order_id %>" class="btn-view">View</a>
+              </td>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+  // 🔍 Search (แบบเรียลไทม์ + เอฟเฟกต์ fade เหมือนหน้า Payments)
+  const searchInput = document.querySelector('.order-search-glass input');
+  const rows = document.querySelectorAll('.order-table tbody tr');
+
+  // เพิ่ม transition ให้ทุกแถว
+  rows.forEach(row => {
+    row.style.transition = "opacity 0.25s ease, transform 0.25s ease";
+  });
+
+  searchInput.addEventListener("input", () => {
+    const val = searchInput.value.toLowerCase().trim();
+
+    rows.forEach(row => {
+      const orderId = row.children[0].textContent.toLowerCase();
+      const customer = row.children[1].textContent.toLowerCase();
+      const email = row.children[2].textContent.toLowerCase();
+      const payment = row.children[4].textContent.toLowerCase();
+      const status = row.children[5].textContent.toLowerCase();
+
+      const match =
+        orderId.includes(val) ||
+        customer.includes(val) ||
+        email.includes(val) ||
+        payment.includes(val) ||
+        status.includes(val);
+
+      if (match) {
+        // 🔹 แสดงแถวแบบ fade in
+        row.style.display = "";
+        setTimeout(() => {
+          row.style.opacity = "1";
+          row.style.transform = "scale(1)";
+        }, 10);
+      } else {
+        // 🔹 ซ่อนแถวแบบ fade out
+        row.style.opacity = "0";
+        row.style.transform = "scale(0.98)";
+        setTimeout(() => {
+          row.style.display = "none";
+        }, 200);
+      }
+    });
+  });
+</script>
+
+
+</body>
+</html>

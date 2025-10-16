@@ -74,11 +74,12 @@ router.post('/', async (req, res) => {
       }
 
       req.session.user = {
-        id: staff.stfID,
+        stfID: staff.stfID,         // ✅ ต้องใช้ key นี้!
         username: staff.username,
         email: staff.email,
         role: staff.role,
       };
+
 
       console.log(`🟣 ADMIN LOGIN: ${staff.username} (${staff.role})`);
       return res.redirect('/admin'); // ✅ พาไปหน้า admin

@@ -12,6 +12,7 @@
     <p>Welcome, <%= user ? user.username : 'Admin' %> 🌿</p>
 
     <div class="admin-menu-grid">
+
       <a href="/admin/dashboard" class="admin-card">
         <h2>📊 Dashboard</h2>
         <p>View reports and overall system summary</p>
@@ -22,10 +23,21 @@
         <p>Manage product list, prices, and stock</p>
       </a>
 
+      <a href="/admin/orders" class="admin-card">
+        <h2>📦 Orders</h2>
+        <p>View and manage customer orders</p>
+      </a>
+
+      <a href="/admin/payments" class="admin-card">
+        <h2>💳 Payments</h2>
+        <p>Verify bank transfers and issue receipts</p>
+      </a>
+
       <a href="/admin/employee" class="admin-card">
         <h2>👥 Employees</h2>
         <p>Add or manage employee accounts</p>
       </a>
+
     </div>
   </div>
 </body>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Payments - Chaploy Admin</title>
+  <link rel="stylesheet" href="/stylesheets/admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    /* ✨ เพิ่ม animation ให้เวลาซ่อน/โชว์ */
+    .payment-table tr {
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .payment-table tr[style*="display: none"] {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body class="admin-payments">
+  <%- include('../partials/admin_navbar') %>
+
+  <div class="payment-list-container">
+    <h2>Manage Payments</h2>
+
+    <!-- 🔍 Glass Search -->
+    <form class="payment-search-glass" onsubmit="return false;">
+      <input type="text" placeholder="Search payment, customer, or order..." autocomplete="off">
+      <button type="button"><img src="/icons/search.png" alt="search"></button>
+    </form>
+
+    <!-- 📋 Payment Table -->
+    <table class="payment-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Total</th>
+          <th>Slip</th>
+          <th>Status</th>
+          <th>Verified By</th>
+          <th>Verified At</th>
+          <th>Payment Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (payments.length === 0) { %>
+          <tr><td colspan="10" class="no-data">No payments found</td></tr>
+        <% } else { %>
+          <% payments.forEach((p, i) => { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><%= String(p.order_id).padStart(4, '0') %></td>
+              <td><%= p.customer_name || '-' %></td>
+              <td>฿<%= p.total.toFixed(2) %></td>
+
+              <!-- 🧾 Slip -->
+              <td>
+                <% if (p.slip) { %>
+                  <button class="btn-view-slip" onclick="viewSlip('<%= p.slip %>')">View Slip</button>
+                <% } else { %>
+                  <span class="status-badge cancelled">No Slip</span>
+                <% } %>
+              </td>
+
+              <!-- 💰 Status -->
+              <td>
+                <% if (p.status === 'verified') { %>
+                  <span class="status-badge paid">Verified</span>
+                <% } else if (p.status === 'pending') { %>
+                  <span class="status-badge pending">Pending</span>
+                <% } else { %>
+                  <span class="status-badge cancelled">Cancelled</span>
+                <% } %>
+              </td>
+
+              <td><%= p.verified_by_name || '-' %></td>
+              <td><%= p.verified_at || '-' %></td>
+              <td><%= p.payment_date || '-' %></td>
+
+              <!-- ⚙️ Action -->
+              <td>
+                <% if (p.status === 'pending') { %>
+                  <button class="btn-verify" onclick="verifyPayment(<%= p.payment_id %>)">Verify</button>
+                <% } else { %>
+                  <button class="btn-verified" disabled>Verified</button>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // 🧾 ดูสลิปแบบเต็ม
+    function viewSlip(imgPath) {
+      Swal.fire({
+        title: 'Payment Slip',
+        imageUrl: imgPath,
+        imageAlt: 'Payment Slip',
+        confirmButtonText: 'Close',
+        width: 400,
+        padding: '1em',
+      });
+    }
+
+    // ✅ ยืนยันการจ่ายเงิน
+    function verifyPayment(id) {
+      Swal.fire({
+        title: 'Confirm verification?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, verify it!'
+      }).then(result => {
+        if (result.isConfirmed) {
+          fetch(`/admin/payments/verify/${id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          })
+          .then(r => r.json())
+          .then(data => {
+            if (data.success) {
+              Swal.fire('✅ Verified!', 'Receipt sent to customer.', 'success');
+              setTimeout(() => location.reload(), 1500);
+            } else {
+              Swal.fire('Error', data.message, 'error');
+            }
+          }).catch(() => {
+            Swal.fire('Error', 'Cannot verify payment.', 'error');
+          });
+        }
+      });
+    }
+
+    // ✅ ค้นหาแบบเรียลไทม์ + เอฟเฟกต์ fade เหมือนหน้า Orders
+    const searchInput = document.querySelector('.payment-search-glass input');
+    const rows = document.querySelectorAll('.payment-table tbody tr');
+
+    searchInput.addEventListener("input", () => {
+      const val = searchInput.value.toLowerCase();
+
+      rows.forEach(row => {
+        const orderId = row.children[1].textContent.toLowerCase();
+        const customer = row.children[2].textContent.toLowerCase();
+        const total = row.children[3].textContent.toLowerCase();
+        const status = row.children[5].textContent.toLowerCase();
+        const verifiedBy = row.children[6].textContent.toLowerCase();
+
+        const match =
+          orderId.includes(val) ||
+          customer.includes(val) ||
+          total.includes(val) ||
+          status.includes(val) ||
+          verifiedBy.includes(val);
+
+        // 🩶 ใช้ transition แบบจางลง
+        row.style.transition = "opacity 0.25s ease, transform 0.25s ease";
+        row.style.opacity = match ? "1" : "0";
+        row.style.transform = match ? "scale(1)" : "scale(0.98)";
+        setTimeout(() => {
+          row.style.display = match ? "" : "none";
+        }, match ? 0 : 200);
+      });
+    });
+  </script>
+</body>
+</html>
