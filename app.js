@@ -18,6 +18,7 @@ var contactRouter = require('./routes/contact');
 var resetRouter = require('./routes/reset');
 var adminRouter = require('./routes/admin');
 var shopRouter = require('./routes/shop');
+// var profileRouter = require('./routes/profile');
 
 // --- Middlewares ---
 var cartCount = require('./middleware/cartCount');
@@ -71,13 +72,14 @@ app.set('view engine', 'ejs');
 // 🚏 ROUTES
 // ================================
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', usersRouter);
 app.use('/register', registerRouter);
 app.use('/login', loginRouter);
 app.use('/contact', contactRouter);
 app.use('/reset', resetRouter);
 app.use('/admin', adminRouter);
 app.use('/shop', shopRouter);
+
 
 // ================================
 // 🧹 DEBUG TOOL (optional)

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile - Chaploy</title>
+  <link rel="stylesheet" href="/stylesheets/homepage.css?v=<%= Date.now() %>">
+</head>
+<body>
+  <%- include('./partials/navbar') %>
+
+  <div class="profile-container">
+    <h1>My Profile</h1>
+
+    <!-- 🟢 ข้อมูลส่วนตัว -->
+    <form action="/profile/update" method="POST" class="profile-form">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" name="firstname" value="<%= user.firstname %>" required>
+      </div>
+
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" name="lastname" value="<%= user.lastname %>" required>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" value="<%= user.email %>" disabled>
+      </div>
+
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" name="phone" value="<%= user.phone || '' %>" maxlength="10" pattern="[0-9]{10}" required>
+      </div>
+
+      <button type="submit" class="btn-save">Save Changes</button>
+    </form>
+
+    <hr>
+
+    <!-- 🟡 เปลี่ยนรหัสผ่าน -->
+    <form action="/profile/password" method="POST" class="password-form">
+      <h2>Change Password</h2>
+      <div class="form-group">
+        <label>Current Password</label>
+        <input type="password" name="currentPassword" required>
+      </div>
+
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" name="newPassword" required>
+      </div>
+
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <input type="password" name="confirmPassword" required>
+      </div>
+
+      <button type="submit" class="btn-password">Change Password</button>
+    </form>
+  </div>
+</body>
+</html>
