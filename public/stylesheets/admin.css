@@ -179,46 +179,122 @@ body {
   animation: fadeIn 0.6s ease-out;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ================================
+   🌿 ADMIN INDEX (Premium Style)
+   ================================ */
+.admin-index {
+  font-family: "Geologica", sans-serif;
+  background: linear-gradient(180deg, #f9faf9 0%, #eef3ec 100%);
+  color: #2e4d39;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-h1 {
+/* Title & Subtitle */
+.admin-index-title {
   text-align: center;
-  margin-bottom: 25px;
+  font-size: 2.2rem;
+  font-weight: 600;
   color: #2e7d5e;
+  margin-top: 50px;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
   animation: fadeIn 0.8s ease;
 }
 
-h2 {
+.admin-index-subtitle {
   text-align: center;
-  margin-bottom: 25px;
+  color: #607d68;
+  font-size: 1.05rem;
+  margin-bottom: 40px;
+  font-family: "Quicksand", sans-serif;
+}
+
+/* Cards Container — one row */
+.admin-index-cards {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 25px;
+  padding: 0 40px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #a3b8a0 #f0f5f2;
+}
+
+.admin-index-cards::-webkit-scrollbar { height: 8px; }
+.admin-index-cards::-webkit-scrollbar-thumb {
+  background: #a3b8a0;
+  border-radius: 10px;
+}
+.admin-index-cards::-webkit-scrollbar-track { background: #f0f5f2; }
+
+/* Card */
+.admin-card {
+  flex: 0 0 210px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 18px;
+  padding: 25px 18px;
+  text-decoration: none;
+  color: #2e4d39;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(8px);
+  min-height: 170px;
+}
+
+.admin-card i {
+  font-size: 42px;
+  color: #3d9a6a;
+  margin-bottom: 12px;
+  transition: transform 0.3s ease;
+}
+
+.admin-card h3 {
+  margin: 6px 0;
   color: #2e7d5e;
-  animation: fadeIn 0.8s ease;
-  font-size: 40px;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
-input, textarea, select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  font-family: "Geologica", sans-serif;
+.admin-card p {
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+  margin: 0;
+  line-height: 1.4;
 }
 
-/* 🪄 Focus effect */
-input:focus, textarea:focus, select:focus {
-  border-color: #2e7d5e;
-  box-shadow: 0 0 5px rgba(46,125,94,0.3);
-  outline: none;
+/* Hover Effects */
+.admin-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  background: linear-gradient(145deg, #fdfdfd, #eaf5ea);
 }
 
-button, a {
-  font-family: "Geologica", sans-serif;
-  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+.admin-card:hover i {
+  transform: rotate(8deg) scale(1.1);
 }
+
+/* Accent Icons */
+.admin-card.dashboard i { color: #4caf50; }
+.admin-card.products i { color: #f57c00; }
+.admin-card.orders i { color: #6a5acd; }
+.admin-card.payments i { color: #ffc107; }
+.admin-card.employees i { color: #455a64; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .admin-card { flex: 0 0 180px; }
+}
+@media (max-width: 600px) {
+  .admin-card { flex: 0 0 160px; }
+}
+
 
 /* ===== ปุ่ม reusable ===== */
 .btn-green {
@@ -1237,6 +1313,26 @@ body.admin-orders {
   color: #a07800;
 }
 
+.status-badge.confirmed {
+  background-color: #e3f2fd;   /* ฟ้าอ่อน */
+  color: #1e88e5;
+}
+
+.status-badge.shipped {
+  background-color: #ffe9d5;   /* ส้มพาสเทล */
+  color: #ef6c00;
+}
+
+.status-badge.unknown {
+  background-color: #f2f2f2;
+  color: #555;
+}
+
+.status-badge.delivered {
+  background-color: #e2f5e8;   /* เขียวชาอ่อน */
+  color: #2e7d32;
+}
+
 .status-badge.cancelled {
   background-color: #ffe0e0;
   color: #b10000;
@@ -1592,7 +1688,8 @@ table.order-items tr:hover {
   font-family: "Quicksand", sans-serif;
 }
 
-.update-form button {
+/* ✅ ปุ่ม Update (ของเดิม) */
+.btn-update {
   background: linear-gradient(135deg, #2e7d5e, #379e76);
   color: #fff;
   margin-top: 20px;
@@ -1603,11 +1700,62 @@ table.order-items tr:hover {
   font-weight: 600;
   font-family: "Geologica", sans-serif;
   transition: all 0.25s ease;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
-.update-form button:hover {
+.btn-update:hover {
   background: linear-gradient(135deg, #379e76, #2e7d5e);
   transform: translateY(-2px);
 }
+
+/* 🟥 ปุ่ม Cancel (เหมือน Update แต่สีแดง) */
+.btn-cancel {
+  background: linear-gradient(135deg, #b33939, #a03131);
+  color: #fff;
+  margin-top: 20px;
+  padding: 9px 20px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: "Geologica", sans-serif;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-cancel:hover {
+  background: linear-gradient(135deg, #a03131, #b33939);
+  transform: translateY(-2px);
+}
+
+/* จัดให้สองปุ่มอยู่ข้างกันตรงกลาง */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.cancelled-box {
+  background: #fff4f4;
+  border: 1px solid #e0b3b3;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.cancelled-text {
+  color: #c53b3b;
+  font-weight: 600;
+  font-size: 1.1em;
+}
+
+.cancelled-note {
+  color: #555;
+  margin-top: 8px;
+  font-size: 0.95em;
+}
+
+
 

@@ -133,7 +133,7 @@ router.get('/products/delete/:id', checkAdmin, (req, res) => {
 // 👥 [5] จัดการพนักงาน
 // ================================
 router.get('/employee', checkAdmin, (req, res) => {
-  const sql = 'SELECT * FROM staff ORDER BY stfID DESC';
+  const sql = 'SELECT * FROM staff ORDER BY stfID ASC';
   db.query(sql, (err, employees) => {
     if (err) throw err;
     res.render('admin/employee', { employees });
@@ -266,7 +266,7 @@ const [recentOrders] = await db.promise().query(`
     o.order_status
   FROM orders o
   LEFT JOIN customers c ON o.customer_id = c.id
-  ORDER BY o.created_at DESC
+  ORDER BY o.created_at ASC
   LIMIT 5
 `);
 
@@ -361,7 +361,7 @@ router.get('/reports/sales', checkAdmin, async (req, res) => {
       LEFT JOIN customers c ON o.customer_id = c.id
       WHERE MONTH(o.created_at) = MONTH(CURDATE())
         AND YEAR(o.created_at) = YEAR(CURDATE())
-      ORDER BY o.created_at DESC
+      ORDER BY o.created_at ASC
     `);
 
     if (!orders.length) {
@@ -456,6 +456,78 @@ doc
 });
 
 // ================================
+// ✅  Manage Orders (Fixed Version)
+// ================================
+router.get('/orders', checkAdmin, async (req, res) => {
+  try {
+    const q = req.query.q ? `%${req.query.q}%` : '%';
+
+    const [rows] = await db.promise().query(`
+      SELECT 
+        o.id AS order_id,
+        o.customer_id,
+        c.firstname,
+        c.lastname,
+        c.email,
+        IFNULL(o.total, 0) AS total,
+        o.payment_status,
+        o.order_status,
+        o.created_at,
+        o.cancelled_by,
+        s.fullname AS staff_name
+      FROM orders o
+      LEFT JOIN customers c ON o.customer_id = c.id
+      LEFT JOIN staff s ON o.cancelled_by = s.stfID
+      WHERE 
+        CONCAT(c.firstname, ' ', c.lastname) LIKE ? OR
+        o.id LIKE ? OR
+        o.payment_status LIKE ? OR
+        o.order_status LIKE ? OR
+        s.fullname LIKE ?
+      ORDER BY o.created_at ASC
+    `, [q, q, q, q, q]);
+
+    // ✅ เพิ่ม logic แปลงสถานะให้สวยงาม
+    const formatted = rows.map(o => {
+      let displayStatus = o.order_status;
+
+      if (displayStatus && displayStatus.toLowerCase().includes('cancelled')) {
+      if (o.cancelled_by && o.staff_name) {
+        displayStatus = `Cancelled by ${o.staff_name}`;
+      } else if (displayStatus.toLowerCase().includes('customer')) {
+        displayStatus = `Cancelled by Customer`;
+      } else {
+        displayStatus = `Cancelled by Admin`;
+      }
+    }
+
+
+      return {
+        ...o,
+        total: parseFloat(o.total || 0).toFixed(2),
+        display_status: displayStatus,
+        created_at: o.created_at
+          ? new Date(o.created_at).toLocaleString('th-TH', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit'
+            })
+          : '—'
+      };
+    });
+
+    res.render('admin/admin_orders', { orders: formatted, q: req.query.q || '' });
+
+  } catch (err) {
+    console.error('❌ Error fetching orders:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// ================================
 // 💳 [7] จัดการการชำระเงิน
 // ================================
 router.get('/payments', checkAdmin, async (req, res) => {
@@ -483,7 +555,7 @@ router.get('/payments', checkAdmin, async (req, res) => {
     o.id LIKE ? OR
     p.status LIKE ? OR
     s.fullname LIKE ?
-  ORDER BY p.payment_date DESC
+  ORDER BY p.payment_date ASC
 `, [q, q, q, q]);
 
 
@@ -550,9 +622,11 @@ router.get('/orders', checkAdmin, async (req, res) => {
         o.total,
         o.payment_status,
         o.order_status,
-        o.created_at
+        o.created_at,
+        s.fullname AS cancelled_by_name
       FROM orders o
       LEFT JOIN customers c ON o.customer_id = c.id
+      LEFT JOIN staff s ON o.cancelled_by = s.stfID
       WHERE 
         c.firstname LIKE ? OR
         c.lastname LIKE ? OR
@@ -566,22 +640,33 @@ router.get('/orders', checkAdmin, async (req, res) => {
          ? [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, numericId]
          : [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm]);
 
-    const formatted = orders.map((o, index) => ({
-      ...o,
-      no: index + 1,
-      total: parseFloat(o.total || 0),
-      created_at: o.created_at
-        ? new Date(o.created_at).toLocaleString('th-TH', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-          })
-        : '—'
-    }));
+    // 🟢 เพิ่ม logic แยก Cancelled by Customer / Admin
+    const formatted = orders.map((o, index) => {
+  let displayStatus = o.order_status;
 
+  if (o.order_status?.startsWith('Cancelled by')) {
+    displayStatus = `Cancelled by ${o.cancelled_by_name || 'Admin'}`;
+  }
+
+      return {
+        ...o,
+        no: index + 1,
+        total: parseFloat(o.total || 0),
+        display_status: displayStatus,
+        created_at: o.created_at
+          ? new Date(o.created_at).toLocaleString('th-TH', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit'
+            })
+          : '—'
+      };
+    });
+
+    // ✅ ส่งค่า display_status ไปแทน order_status
     res.render('admin/admin_orders', { 
       title: 'Manage Orders',
       orders: formatted,
@@ -594,21 +679,25 @@ router.get('/orders', checkAdmin, async (req, res) => {
   }
 });
 
-
-
-// ดูรายละเอียดแต่ละออเดอร์
+// ================================
+// ✅ [5] ดูรายละเอียดออเดอร์ (แสดงชื่อคนยกเลิก + ปิดแก้ไขถ้ายกเลิกแล้ว)
+// ================================
 router.get('/orders/:id', checkAdmin, async (req, res) => {
   try {
     const orderId = req.params.id;
 
-    // ✅ ดึงข้อมูล order หลัก
+    // ✅ ดึงข้อมูล order หลัก พร้อมชื่อ staff ถ้ามี
     const [[order]] = await db.promise().query(`
       SELECT 
         o.*,
         c.firstname,
-        c.lastname
+        c.lastname,
+        c.email,
+        c.phone,
+        s.fullname AS staff_name
       FROM orders o
       LEFT JOIN customers c ON o.customer_id = c.id
+      LEFT JOIN staff s ON o.cancelled_by = s.stfID
       WHERE o.id = ?
     `, [orderId]);
 
@@ -631,19 +720,24 @@ router.get('/orders/:id', checkAdmin, async (req, res) => {
 
     order.slip_image = payment ? payment.slip_image : null;
 
-    // ✅ format ตัวเลขก่อนส่งเข้า EJS
-    const formattedItems = items.map(it => ({
-      ...it,
-      price_each: parseFloat(it.price_each || 0),
-      subtotal: parseFloat(it.subtotal || 0)
-    }));
+    // ✅ เพิ่มข้อความสถานะที่แสดงผลจริง
+    if (order.order_status === 'cancelled') {
+      order.display_status = order.staff_name
+        ? `Cancelled by ${order.staff_name}`
+        : 'Cancelled by Customer';
+    } else {
+      order.display_status = order.order_status;
+    }
 
-    res.render('admin/admin_order_detail', { order, items: formattedItems });
+
+    res.render('admin/admin_order_detail', { order, items });
+
   } catch (err) {
-    console.error('❌ Error fetching order detail:', err);
+    console.error('❌ Error fetching order details:', err);
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 // ✅ [POST] ยืนยันการชำระเงิน + สร้างใบเสร็จ + ส่งเมล
 router.post('/payments/verify/:id', async (req, res) => {
@@ -853,7 +947,145 @@ router.post('/orders/update/:id', checkAdmin, async (req, res) => {
   }
 });
 
+// ================================
+// 📨 [1] ยกเลิกออเดอร์โดย Admin + ส่งอีเมลแจ้งลูกค้า (Fixed & Complete)
+// ================================
+router.post('/orders/cancel/:id', checkAdmin, async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const { reason, note } = req.body;
+    const adminName = req.session.user?.fullname || 'Admin';
+    const staffId = req.session.user?.stfID || req.session.user?.id || null;
 
+    console.log('🟢 Cancel request by Admin:', adminName);
+    console.log('🟢 Cancelling order ID:', orderId);
+
+    // ✅ ดึงข้อมูลลูกค้า
+    const [[order]] = await db.promise().query(`
+      SELECT 
+        o.id, o.total, o.order_status, o.customer_id,
+        c.firstname, c.lastname, c.email
+      FROM orders o
+      LEFT JOIN customers c ON o.customer_id = c.id
+      WHERE o.id = ?
+    `, [orderId]);
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    // ✅ อัปเดตสถานะ + บันทึกคนยกเลิก
+    await db.promise().query(`
+      UPDATE orders
+      SET order_status = 'cancelled',
+          cancelled_by = ?,
+          updated_at = NOW()
+      WHERE id = ?
+    `, [staffId, orderId]);
+
+    console.log(`🟢 Order ${orderId} cancelled successfully by ${adminName}`);
+
+    // ✅ ส่งอีเมลแจ้งลูกค้า
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'chaploy.house@gmail.com',
+        pass: 'rqfm hzup fivx ypbv' // ✅ App Password
+      }
+    });
+
+    const mailOptions = {
+      from: '"Chaploy Premium Tea & Coffee" <chaploy.house@gmail.com>',
+      to: order.email,
+      subject: `Your Order ${String(order.id).padStart(4, '0')} Has Been Cancelled`,
+      html: `
+        <div style="font-family:'Quicksand',sans-serif;line-height:1.6;color:#2e4d39;">
+          <p>Dear ${order.firstname},</p>
+          <p>We regret to inform you that your order 
+             <strong>#${String(order.id).padStart(4, '0')}</strong> 
+             has been cancelled by our staff (${adminName}).</p>
+
+          <p><strong>Reason:</strong> ${reason || 'Out of stock'}<br>
+          <strong>Details:</strong> ${note || 'No additional details provided.'}</p>
+
+          <p>If you have already made a payment, please contact our support team for a refund.</p>
+          <p>Thank you for your understanding,<br>
+          <strong>Chaploy Premium Tea & Coffee</strong></p>
+        </div>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`📩 Cancellation email sent to ${order.email}`);
+
+    return res.json({ success: true, message: `Order cancelled by ${adminName} and email sent successfully.` });
+
+  } catch (err) {
+    console.error('❌ Error cancelling order (Admin):', err);
+    res.status(500).json({ success: false, message: 'Failed to cancel order' });
+  }
+});
+
+// ✅ Cancel Order 
+async function cancelOrder(orderId) {
+  const result = await Swal.fire({
+    title: 'Cancel this order?',
+    text: 'Are you sure you want to cancel this order?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#43593E',
+    cancelButtonColor: '#888',
+    confirmButtonText: 'Yes, cancel it'
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    const res = await fetch(`/purchases/cancel/${orderId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    // 🟡 อ่านเป็น text ก่อน
+    const text = await res.text();
+    console.log('📦 Raw response:', text);
+
+    // 🟢 พยายาม parse JSON ถ้าได้
+    let data = {};
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      console.warn('⚠️ Response was not valid JSON, showing success fallback');
+    }
+
+    // 🟢 ถ้าสถานะ HTTP เป็น 200 แปลว่าสำเร็จ
+    if (res.ok && (data.success || text.includes('success'))) {
+      await Swal.fire({
+        icon: 'success',
+        title: 'Order Cancelled',
+        text: 'Your order has been cancelled successfully.',
+        confirmButtonColor: '#43593E'
+      });
+      return window.location.reload();
+    }
+
+    // 🔴 ถ้าไม่ ok
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: data.message || 'Failed to cancel this order.',
+      confirmButtonColor: '#43593E'
+    });
+  } catch (err) {
+    console.error('❌ Fetch error:', err);
+    Swal.fire({
+      icon: 'error',
+      title: 'Server Error',
+      text: 'Something went wrong while cancelling the order.',
+      confirmButtonColor: '#43593E'
+    });
+  }
+}
 
 // ================================
 // 🚪 Logout
@@ -870,3 +1102,4 @@ router.get('/logout', (req, res) => {
 });
 
 module.exports = router;
+

@@ -33,33 +33,32 @@
             <td><%= order.order_date %></td>
             <td>$<%= order.total.toLocaleString('en-US', { minimumFractionDigits: 2 }) %></td>
             <td>
-            <% if (order.payment_status === 'paid') { %>
+              <% if (order.payment_status === 'paid') { %>
                 <span class="badge paid">Paid</span>
-            <% } else { %>
+              <% } else { %>
                 <span class="badge pending">Pending</span>
-            <% } %>
+              <% } %>
             </td>
             <td>
-            <% if (order.order_status === 'pending') { %>
+              <% if (order.order_status === 'pending') { %>
                 <span class="badge pending">Pending</span>
-            <% } else if (order.order_status === 'confirmed') { %>
+              <% } else if (order.order_status === 'confirmed') { %>
                 <span class="badge confirmed">Confirmed</span>
-            <% } else if (order.order_status === 'shipped') { %>
+              <% } else if (order.order_status === 'shipped') { %>
                 <span class="badge shipped">Shipped</span>
-            <% } else if (order.order_status === 'delivered') { %>
+              <% } else if (order.order_status === 'delivered') { %>
                 <span class="badge delivered">Delivered</span>
-            <% } else if (order.order_status === 'cancelled') { %>
+              <% } else if (order.order_status === 'cancelled') { %>
                 <span class="badge cancelled">Cancelled</span>
-            <% } %>
+              <% } %>
             </td>
             <td class="actions">
-            <button class="btn-view" onclick="viewOrder(<%= order.order_id %>)">View</button>
-
-            <% if (order.order_status.toLowerCase() === 'pending') { %>
+              <button class="btn-view" onclick="viewOrder(<%= order.order_id %>)">View</button>
+              <% if (order.order_status.toLowerCase() === 'pending') { %>
                 <button class="btn-cancel" onclick="cancelOrder(<%= order.order_id %>)">Cancel</button>
-            <% } else { %>
+              <% } else { %>
                 <button class="btn-disabled" onclick="cannotCancel()">Cancel</button>
-            <% } %>
+              <% } %>
             </td>
         </tr>
         <% }); %>
@@ -68,14 +67,11 @@
     <% } %>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
 async function viewOrder(orderId) {
   try {
     const res = await fetch(`/purchases/items/${orderId}`);
     const data = await res.json();
-
     if (!data.success) {
       return Swal.fire({
         icon: 'info',
@@ -116,7 +112,6 @@ async function viewOrder(orderId) {
       confirmButtonColor: '#43593E'
     });
   } catch (e) {
-    console.error(e);
     Swal.fire({
       icon: 'error',
       title: 'Server Error',
@@ -126,8 +121,9 @@ async function viewOrder(orderId) {
   }
 }
 
-// cancle
-
+// ==============================
+// ✅ Cancel Order 
+// ==============================
 async function cancelOrder(orderId) {
   const result = await Swal.fire({
     title: 'Cancel this order?',
@@ -143,40 +139,77 @@ async function cancelOrder(orderId) {
 
   try {
     const res = await fetch(`/purchases/cancel/${orderId}`, { method: 'POST' });
-    const data = await res.json();
 
-    if (data.success) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Order Cancelled',
-        text: 'Please contact support for refund within 3–5 business days.',
-        confirmButtonColor: '#43593E'
-      }).then(() => window.location.reload());
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: data.message || 'Failed to cancel this order.',
+    // 🔍 Step 1: อ่านค่าจาก server แบบ raw ก่อน
+    const text = await res.text();
+    console.log('📦 Raw response from server:', text);
+
+    // 🔍 Step 2: พยายาม parse JSON
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      console.warn('⚠️ Response is not valid JSON. Using fallback mode.');
+      data = { success: res.ok, message: text };
+    }
+
+    // ✅ Step 3: ตรวจสถานะตาม response จริง
+    if (res.status === 403) {
+      return Swal.fire({
+        icon: 'info',
+        title: 'Please Login',
+        text: 'You must be logged in to cancel your order.',
         confirmButtonColor: '#43593E'
       });
     }
+
+    if (res.status === 404) {
+      return Swal.fire({
+        icon: 'warning',
+        title: 'Order Not Found',
+        text: data.message || 'This order could not be found.',
+        confirmButtonColor: '#43593E'
+      });
+    }
+
+    if (res.status === 400) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Cannot Cancel',
+        text: data.message || 'This order cannot be cancelled.',
+        confirmButtonColor: '#43593E'
+      });
+    }
+
+    if (res.ok && data.success) {
+      await Swal.fire({
+        icon: 'success',
+        title: 'Order Cancelled',
+        text: 'Your order has been cancelled successfully.',
+        confirmButtonColor: '#43593E'
+      });
+      return window.location.reload();
+    }
+
+    // 🔴 ถ้าไม่เข้าเงื่อนไขไหนเลย
+    Swal.fire({
+      icon: 'error',
+      title: 'Unexpected Error',
+      text: data.message || 'Something went wrong while cancelling the order.',
+      confirmButtonColor: '#43593E'
+    });
+
   } catch (err) {
+    console.error('❌ Fetch error:', err);
     Swal.fire({
       icon: 'error',
       title: 'Server Error',
-      text: 'Something went wrong while cancelling the order.',
+      text: 'The server did not respond correctly. Please try again later.',
       confirmButtonColor: '#43593E'
     });
   }
 }
-function cannotCancel() {
-  Swal.fire({
-    icon: 'info',
-    title: 'Cannot Cancel',
-    text: 'This order has already been confirmed or cancelled.',
-    confirmButtonColor: '#43593E'
-  });
-}
+
 </script>
 </body>
 </html>

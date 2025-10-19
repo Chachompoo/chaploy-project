@@ -2,43 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %> - Chaploy Admin</title>
+  <title>Chaploy Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/stylesheets/admin.css">
+  <script src="https://kit.fontawesome.com/a2e0e6f9a0.js" crossorigin="anonymous"></script>
 </head>
-<body class="admin-menu-page">
-  <div class="admin-menu-container">
-    <h1>CHAPLOY ADMIN PANEL</h1>
-    <p>Welcome, <%= user ? user.username : 'Admin' %> 🌿</p>
 
-    <div class="admin-menu-grid">
+<body class="admin-index">
+  <%- include('../partials/admin_navbar') %>
 
-      <a href="/admin/dashboard" class="admin-card">
-        <h2>📊 Dashboard</h2>
-        <p>View reports and overall system summary</p>
+  <section class="admin-index-container">
+    <h2 class="admin-index-title">Welcome back, <%= user?.fullname || 'Admin' %> 🌿</h2>
+    <p class="admin-index-subtitle">Manage your store efficiently with Chaploy Admin Panel</p>
+
+    <div class="admin-index-cards">
+      <a href="/admin/dashboard" class="admin-card dashboard">
+        <i class="fa-solid fa-chart-line"></i>
+        <h3>Dashboard</h3>
+        <p>View reports and sales overview</p>
       </a>
 
-      <a href="/admin/products" class="admin-card">
-        <h2>🛍 Products</h2>
+      <a href="/admin/products" class="admin-card products">
+        <i class="fa-solid fa-mug-hot"></i>
+        <h3>Products</h3>
         <p>Manage product list, prices, and stock</p>
       </a>
 
-      <a href="/admin/orders" class="admin-card">
-        <h2>📦 Orders</h2>
+      <a href="/admin/orders" class="admin-card orders">
+        <i class="fa-solid fa-box-open"></i>
+        <h3>Orders</h3>
         <p>View and manage customer orders</p>
       </a>
 
-      <a href="/admin/payments" class="admin-card">
-        <h2>💳 Payments</h2>
-        <p>Verify bank transfers and issue receipts</p>
+      <a href="/admin/payments" class="admin-card payments">
+        <i class="fa-solid fa-credit-card"></i>
+        <h3>Payments</h3>
+        <p>Verify transfers and issue receipts</p>
       </a>
 
-      <a href="/admin/employee" class="admin-card">
-        <h2>👥 Employees</h2>
-        <p>Add or manage employee accounts</p>
+      <a href="/admin/employees" class="admin-card employees">
+        <i class="fa-solid fa-user-gear"></i>
+        <h3>Employees</h3>
+        <p>Manage staff accounts and roles</p>
       </a>
-
     </div>
-  </div>
+  </section>
 </body>
 </html>

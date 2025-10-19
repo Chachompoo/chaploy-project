@@ -343,7 +343,7 @@ router.get('/purchases', checkLogin, async (req, res) => {
       FROM orders o
       LEFT JOIN payments p ON o.id = p.order_id
       WHERE o.customer_id = ?
-      ORDER BY o.order_date DESC
+      ORDER BY o.order_date ASC
     `, [customerId]);
 
     console.log('✅ Orders found:', orders.length);

@@ -24,7 +24,7 @@
       <p><strong>Phone:</strong> <%= order.phone %></p>
       <p><strong>Address:</strong> <%= order.shipping_address %></p>
       <p><strong>Payment Status:</strong> <%= order.payment_status %></p>
-      <p><strong>Order Status:</strong> <%= order.order_status %></p>
+      <p><strong>Order Status:</strong> <%= order.display_status %></p>
     </div>
 
     <!-- 📦 Items -->
@@ -61,38 +61,142 @@
       </div>
     <% } %>
 
-    <form id="updateForm" class="update-form">
-      <label for="status">Update Order Status:</label>
-      <select id="status" name="status">
-        <option value="pending" <%= order.order_status === 'pending' ? 'selected' : '' %>>Pending</option>
-        <option value="confirmed" <%= order.order_status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
-        <option value="shipped" <%= order.order_status === 'shipped' ? 'selected' : '' %>>Shipped</option>
-        <option value="delivered" <%= order.order_status === 'delivered' ? 'selected' : '' %>>Delivered</option>
-        <option value="cancelled" <%= order.order_status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
-      </select>
-      <button type="submit">Update</button>
-    </form>
+    <!-- ================================
+         ✅ Update / Cancel Order Section
+    ================================= -->
+    <% if (order.order_status === 'cancelled') { %>
+      <!-- ❌ ถ้าออเดอร์ถูกยกเลิกแล้ว -->
+      <div class="cancelled-box">
+        <p class="cancelled-text"><strong>Status:</strong> <%= order.display_status %></p>
+        <p class="cancelled-note">This order has been cancelled and can no longer be modified.</p>
+      </div>
+    <% } else { %>
+      <!-- 🟢 ยังไม่ยกเลิก แสดงฟอร์ม -->
+      <form id="updateForm" class="update-form">
+        <label for="status">Update Order Status:</label>
+        <select id="status" name="status">
+          <option value="pending" <%= order.order_status === 'pending' ? 'selected' : '' %>>Pending</option>
+          <option value="confirmed" <%= order.order_status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+          <option value="shipped" <%= order.order_status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+          <option value="delivered" <%= order.order_status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+        </select>
+
+        <div class="button-group">
+          <button type="submit" class="btn-update">Update</button>
+          <button type="button" class="btn-cancel" onclick="cancelOrder(<%= order.id %>)">Cancel Order</button>
+        </div>
+      </form>
+    <% } %>
   </div>
 
   <script>
-    document.querySelector('#updateForm').addEventListener('submit', e=>{
-      e.preventDefault();
-      const status = document.querySelector('#status').value;
-      fetch('/admin/orders/update/<%= order.id %>', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status })
-      })
-      .then(r=>r.json())
-      .then(data=>{
-        if(data.success){
-          Swal.fire('✅ Updated!','Order status updated successfully.','success')
-            .then(()=>location.reload());
-        } else {
-          Swal.fire('Error','Update failed.','error');
+    // ================================
+    // ✅ Update Order Status
+    // ================================
+    const updateForm = document.querySelector('#updateForm');
+    if (updateForm) {
+      updateForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const status = document.querySelector('#status').value;
+        fetch('/admin/orders/update/<%= order.id %>', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            Swal.fire('✅ Updated!', 'Order status updated successfully.', 'success')
+              .then(() => location.reload());
+          } else {
+            Swal.fire('Error', 'Update failed.', 'error');
+          }
+        });
+      });
+    }
+
+    // ================================
+    // ✅ Cancel Order + Send Email (Fixed)
+    // ================================
+    async function cancelOrder(orderId) {
+      const { value: formValues } = await Swal.fire({
+        title: 'Cancel Order',
+        html: `
+          <select id="reason" class="swal2-input">
+            <option value="">Select reason</option>
+            <option value="Out of stock">Out of stock</option>
+            <option value="Invalid payment">Invalid payment</option>
+            <option value="Incorrect address">Incorrect address</option>
+          </select>
+          <textarea id="note" class="swal2-textarea" placeholder="Additional details (optional)"></textarea>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Send Email',
+        cancelButtonText: 'Back',
+        confirmButtonColor: '#379e76',
+        cancelButtonColor: '#c53b3b',
+        background: '#f9f9f5',
+        color: '#2e4d39',
+        preConfirm: () => {
+          const reason = document.getElementById('reason').value;
+          const note = document.getElementById('note').value;
+          if (!reason) {
+            Swal.showValidationMessage('Please select a reason.');
+          }
+          return { reason, note };
         }
       });
-    });
+
+      if (!formValues) return;
+
+      // 🌿 แสดง popup กำลังส่ง
+      Swal.fire({
+        title: 'Sending Email...',
+        text: 'Please wait while we notify the customer.',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+      });
+
+      try {
+        const res = await fetch(`/admin/orders/cancel/${orderId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formValues)
+        });
+
+        const text = await res.text();
+        console.log('📦 Raw response:', text);
+
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (err) {
+          console.warn('⚠️ Not valid JSON, fallback mode');
+          data = { success: res.ok, message: text };
+        }
+
+        Swal.close(); // ปิด popup loading
+
+        Swal.fire({
+          icon: data.success ? 'success' : 'error',
+          title: data.success ? 'Email Sent!' : 'Email Failed',
+          text: data.message || (data.success ? 'Order cancelled successfully.' : 'Unable to send cancellation email.'),
+          confirmButtonColor: '#379e76'
+        }).then(() => {
+          if (data.success) location.reload();
+        });
+
+      } catch (err) {
+        Swal.close();
+        console.error('❌ Fetch error:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Server Error',
+          text: 'Something went wrong while cancelling the order.',
+          confirmButtonColor: '#43593E'
+        });
+      }
+    }
   </script>
 </body>
 </html>

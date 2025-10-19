@@ -53,10 +53,22 @@
                   <span class="status-badge cancelled">Cancelled</span>
                 <% } %>
               </td>
-
               <!-- 📦 Order status -->
-              <td><%= o.order_status || '-' %></td>
-
+              <td>
+              <% if (o.display_status && o.display_status.toLowerCase().includes('cancelled')) { %>
+                <span class="status-badge cancelled"><%= o.display_status %></span>
+              <% } else if (o.display_status && o.display_status.toLowerCase() === 'pending') { %>
+                <span class="status-badge pending">Pending</span>
+              <% } else if (o.display_status && o.display_status.toLowerCase() === 'confirmed') { %>
+                <span class="status-badge confirmed">Confirmed</span>
+              <% } else if (o.display_status && o.display_status.toLowerCase() === 'shipped') { %>
+                <span class="status-badge shipped">Shipped</span>
+              <% } else if (o.display_status && o.display_status.toLowerCase() === 'delivered') { %>
+                <span class="status-badge delivered">Delivered</span>
+              <% } else { %>
+                <span class="status-badge unknown"><%= o.display_status || '-' %></span>
+              <% } %>
+            </td>
               <td><%= o.created_at || '—' %></td>
 
               <td class="order-actions">
