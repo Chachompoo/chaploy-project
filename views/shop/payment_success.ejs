@@ -2,22 +2,144 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Payment Success | Chaploy</title>
+  <title>Payment Submitted | Chaploy</title>
   <link rel="stylesheet" href="/stylesheets/navbar.css" />
   <style>
-    .wrap{max-width:760px;margin:60px auto;background:#fff;padding:32px;border-radius:14px;text-align:center}
-    .wrap h2{margin-top:0}
-    .btn{display:inline-block;margin-top:16px;padding:10px 16px;border-radius:10px;border:1px solid #000}
+    /* 🌿 Base */
+    body {
+      margin: 0;
+      font-family: "Geologica", sans-serif;
+      background: linear-gradient(145deg, #f3f5f2, #e8ece7);
+      color: #2c3e2f;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* 🌿 Card */
+    .payment-card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 50px 60px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      text-align: center;
+      max-width: 600px;
+      animation: pop 0.6s ease;
+    }
+
+    @keyframes pop {
+      from {opacity: 0; transform: scale(0.95);}
+      to {opacity: 1; transform: scale(1);}
+    }
+
+    /* 🌿 Success icon */
+    .success-icon {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #89d19d, #4e8f63);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.25);
+      animation: bounceIn 0.8s ease;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    .success-icon svg {
+      width: 42px;
+      height: 42px;
+      stroke: #fff;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    h2 {
+      font-size: 2.1rem;
+      margin-bottom: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #2c3e2f, #6a8a64);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: #444;
+      margin: 6px 0;
+      font-size: 1.05rem;
+    }
+
+    .muted {
+      color: #6b6b6b;
+      font-size: 0.95rem;
+      margin-top: 10px;
+    }
+
+    .order-number {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #2f4f37;
+      letter-spacing: 1px;
+    }
+
+    /* 🌿 Button */
+    .btn {
+      display: inline-block;
+      margin-top: 28px;
+      padding: 12px 28px;
+      font-weight: 500;
+      border-radius: 50px;
+      background: linear-gradient(90deg, #43593E, #648A63);
+      color: #fff;
+      text-decoration: none;
+      transition: all 0.35s ease;
+      box-shadow: 0 5px 15px rgba(67,89,62,0.2);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(67,89,62,0.3);
+      background: linear-gradient(90deg, #648A63, #43593E);
+    }
+
+    /* 🌿 Responsive */
+    @media (max-width: 600px) {
+      .payment-card { padding: 40px 24px; }
+      h2 { font-size: 1.8rem; }
+    }
   </style>
 </head>
 <body>
   <%- include('../partials/navbar') %>
-  <div class="wrap">
+
+  <div class="payment-card">
+    <div class="success-icon">
+      <svg viewBox="0 0 52 52">
+        <path d="M14 27l7 7 17-17" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
     <h2>Payment Submitted</h2>
-    <p>Thanks! Your order has been submitted successfully.</p>
-    <p>Order No: <strong><%= String(orderId).padStart(4, '0') %></strong></p>
+    <p>Thank you! Your order has been submitted successfully.</p>
+    <p class="order-number">Order No: <%= String(orderId).padStart(4, '0') %></p>
     <p class="muted">We’ll verify your payment shortly. Once verified, a PDF receipt will be sent to your email.</p>
-    <a class="btn" href="/shop/all">Continue shopping</a>
+    <a class="btn" href="/shop/all">Continue Shopping</a>
   </div>
 </body>
 </html>

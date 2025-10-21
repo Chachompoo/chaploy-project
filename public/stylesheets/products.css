@@ -417,3 +417,28 @@ body.all-products-page {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* =========================
+   ✨ Product Grid Animation
+========================= */
+.product-grid {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.product-grid.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* เผื่อไว้ให้หมวด active ดูนุ่ม */
+.filter-bar .categories a {
+  transition: color 0.3s, border-color 0.3s, background 0.3s;
+}
+.filter-bar .categories a.active {
+  background: #43593E;
+  color: #fff;
+  border-radius: 20px;
+  padding: 6px 16px;
+}
+

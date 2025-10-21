@@ -19,6 +19,92 @@
         <h4>for</h4>
         <h5>SPECIAL ONES</h5>
     </div>
-</div>
+
+    <!-- 🌿 Featured Products -->
+<section class="featured-products">
+  <h2>Our Recommended Picks</h2>
+  <div class="featured-grid">
+    <div class="product-card">
+      <img src="/images/matcha_box.jpg" alt="Matcha Bliss">
+      <h3>Matcha Bliss</h3>
+      <p>Rich, earthy Japanese matcha that soothes and energizes every moment.</p>
+    </div>
+
+    <div class="product-card">
+      <img src="/images/latte_box.jpg" alt="Caramel Latte">
+      <h3>Caramel Latte</h3>
+      <p>Smooth espresso with a touch of caramel — pure indulgence in every sip.</p>
+    </div>
+
+    <div class="product-card">
+      <img src="/images/earl_grey_box.jpg" alt="Earl Grey Royale">
+      <h3>Earl Grey Royale</h3>
+      <p>Elegant black tea infused with bergamot and soft citrus aroma.</p>
+    </div>
+  </div>
+</section>
+
+    
+<section class="section-intro">
+  <p>Experience the essence of premium tea and coffee — perfectly crafted for moments that matter.</p>
+  <a href="/shop/all" class="btn-go-shop">Shop Now</a>
+</section>
+<section class="section-feature">
+  <h2>Signature Collections</h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <img src="/images/green_tea_box.jpg" alt="Green Tea">
+      <h3>Green Serenity</h3>
+      <p>Refreshing, pure, and calming — the perfect balance in every sip.</p>
+    </div>
+    <div class="feature-card">
+      <img src="/images/coffee_box.jpg" alt="Coffee">
+      <h3>Morning Bloom</h3>
+      <p>Awaken your senses with the rich aroma of Chaploy’s finest roast.</p>
+    </div>
+    <div class="feature-card">
+      <img src="/images/rose_tea_box.jpg" alt="Rose Tea">
+      <h3>Rose Harmony</h3>
+      <p>A delicate floral blend that brings warmth to your heart.</p>
+    </div>
+  </div>
+</section>
+<section class="section-story">
+  <div class="story-container">
+    <h2>About Chaploy</h2>
+    <p>
+      Chaploy was born from a love of tea, coffee, and calm moments.  
+      Each blend is a reflection of care, craftsmanship, and connection —  
+      bringing peace to your day, one cup at a time.
+    </p>
+  </div>
+</section>
+<footer class="footer-chaploy">
+  <p>© 2025 Chaploy. Crafted with love for tea & coffee lovers.</p>
+</footer>
+<script>
+  // 🌿 Fade & Slide-in Animation (alternate direction)
+  const elements = document.querySelectorAll(
+    '.section-intro, .section-feature, .section-story'
+  );
+
+  elements.forEach((el, i) => {
+    el.classList.add('fade-slide'); // ตั้ง class พื้นฐาน
+    if (i % 3 === 0) el.dataset.direction = 'up';
+    else if (i % 3 === 1) el.dataset.direction = 'left';
+    else el.dataset.direction = 'right';
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.2 });
+
+  elements.forEach((el) => observer.observe(el));
+</script>
+
 </body>
 </html>

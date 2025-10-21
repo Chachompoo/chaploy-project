@@ -68,5 +68,29 @@
     <% } %>
   </section>
 
+  <script>
+  // 🌿 ทำให้ product-grid fade-in เมื่อโหลดเสร็จ
+  document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.querySelector('.product-grid');
+    if (grid) {
+      setTimeout(() => grid.classList.add('show'), 80);
+    }
+  });
+
+  // 🌿 ตอนคลิกเปลี่ยน category ให้ fade-out ก่อนโหลดหน้าใหม่
+  document.querySelectorAll('.categories a').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const grid = document.querySelector('.product-grid');
+      if (grid) grid.classList.remove('show');
+
+      setTimeout(() => {
+        window.location.href = link.href;
+      }, 250); // ตรงกับ transition 0.5s /2
+    });
+  });
+</script>
+
+
 </body>
 </html>

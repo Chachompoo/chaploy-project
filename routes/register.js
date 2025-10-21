@@ -5,12 +5,24 @@ const bcrypt = require('bcrypt');
 
 // ✅ Show register page
 router.get('/', (req, res) => {
-  res.render('register', { error: null, success: null }); // ✅ ค่าตั้งต้น
+  res.render('register', { error: null, success: null });
 });
 
 // ✅ Handle register form
 router.post('/', (req, res) => {
   const { firstName, lastName, email, phone, username, password } = req.body;
+
+  // 🔒 ตรวจสอบความแข็งแรงของรหัสผ่าน
+  const strongPassword =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
+  if (!strongPassword.test(password)) {
+    return res.render('register', {
+      error:
+        '⚠ Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
+      success: null
+    });
+  }
 
   // 🔹 Check if email already exists
   const checkEmailSql = 'SELECT * FROM customers WHERE email = ?';
@@ -53,9 +65,9 @@ router.post('/', (req, res) => {
           }
 
           console.log('✅ Registration successful!');
-          res.render('register', { 
-            success: '✔ Your account has been successfully created! Redirecting to login...', 
-            error: null 
+          res.render('register', {
+            success: '✔ Your account has been successfully created! Redirecting to login...',
+            error: null
           });
         });
       });

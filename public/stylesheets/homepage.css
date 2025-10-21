@@ -1,125 +1,329 @@
 /* homepage */
 body  {
-      margin: 0;
-      padding: 0;
-      background-color: #f2f3ef;
-      text-align: center;
-    }
-
-    .hero {
-      padding: 100px 20px;
-      margin-top: 100px;
-    }
-
-    .hero h1 {
-      font-family: "Cormorant Garamond", serif;
-      font-weight: 400;
-      font-style: normal;
-      font-size: 130px;
-      letter-spacing: 2px;
-      color: #0f0f0f;
-      margin: 0;
-      transform: translate(-450px, 50px);
-    }
-
-    .hero h2 {
-      font-family: "Cormorant Garamond", serif;
-      font-weight: 400;
-      font-style: normal;
-      font-size: 130px;
-      color: #0f0f0f;
-      margin: 20px 0;
-      transform: translate(380px, -400px);
-    }
-    .hero h3 {
-      font-family: "Cormorant Garamond", serif;
-      font-weight: 400;
-      font-style: normal;
-      font-size: 130px;
-      color: #0f0f0f;
-      margin: 20px 0;
-      transform: translate(-30px, -440px);
-    }
-    .hero h4 {
-      font-family: "Tangerine", cursive;
-      font-weight: 400;
-      font-style: normal;     
-      font-size: 200px;
-      color: #0f0f0f;
-      margin: 20px 0;
-      transform: translate(-470px, -500px);
-    }
-    .hero h5 {
-      font-family: "Cormorant Garamond", serif;
-      font-weight: 400;
-      font-style: normal; 
-      font-size: 130px;
-      color: #0f0f0f;
-      margin: 20px 0;
-      transform: translate(50px, -700px);
-    }
-
-    .hero img {
-      max-width: 300px;
-      display: block;
-      margin: 20px auto;
-      transform: translate(-20px,-250px);
-    }
-
-
-/* Contact Page */
-.contact-main-container {
-  display: flex;
-  min-height: 100vh;
-  background: linear-gradient(
-    to right,
-    #70b5ec 50%,    /* สีชมพูอ่อนที่เริ่ม 0% */
-    #584340 50%
-  );
+  margin: 0;
+  padding: 0;
+  background-color: #f2f3ef;
+  text-align: center;
 }
 
-.contact-left,
-.contact-right {
-  flex: 1;
-  overflow: hidden;
+.hero h1, .hero h2, .hero h3, .hero h5 {
+  background: linear-gradient(180deg, #0f0f0f 0%, #43593E 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.contact-left img {
-  object-fit: cover;
-  display: block;
-  width: 50%;
-  height: 60%;
-  border-radius: 10px;
-  transition: transform 0.4s ease;
-  transform: translateX(50%) translateY(40%);
+
+.hero {
+  padding: 100px 20px;
+  margin-top: 150px;
 }
 
-.contact-right img {
-  object-fit: cover;
-  display: block;
-  width: 50%;
-  height: 60%;
-  object-fit: cover;
-  border-radius: 10px;
-  transition: transform 0.4s ease;
-  transform: translateX(50%) translateY(40%);
-}
-.contact-right img:hover{
-  transform: scale(1.08);
-}
-.contact-left img:hover {
-  transform: scale(1.08);
-}
-.contact-text h2 {
-  font-size: 50px;
-  font-family: "Cinzel", serif;
-  margin-bottom: 10px;
-  color: #e70000;
-  letter-spacing: 3px;
-}
-.contact-text h3 {
-  font-size: 28px;
-  font-family: "Geologica", sans-serif;
+.hero h1 {
+  font-family: "Cormorant Garamond", serif;
   font-weight: 400;
-  color: #fff;
+  font-style: normal;
+  font-size: 130px;
+  letter-spacing: 2px;
+  color: #0f0f0f;
+  margin: 0;
+  transform: translate(-450px, 50px);
 }
+
+.hero h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 130px;
+  color: #0f0f0f;
+  margin: 20px 0;
+  transform: translate(380px, -400px);
+}
+.hero h3 {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 130px;
+  color: #0f0f0f;
+  margin: 20px 0;
+  transform: translate(-30px, -440px);
+}
+.hero h4 {
+  font-family: "Tangerine", cursive;
+  font-weight: 400;
+  font-style: normal;     
+  font-size: 200px;
+  color: #0f0f0f;
+  margin: 20px 0;
+  transform: translate(-470px, -500px);
+}
+.hero h5 {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 400;
+  font-style: normal; 
+  font-size: 130px;
+  color: #0f0f0f;
+  margin: 20px 0;
+  transform: translate(50px, -700px);
+}
+
+.hero img {
+  max-width: 300px;
+  display: block;
+  margin: 20px auto;
+  transform: translate(-20px,-250px);
+}
+
+    /* ===============================
+   ✨ Section Intro
+================================ */
+.section-intro {
+  padding: 60px 20px 80px;
+  background-color: #f5f5ef;
+  text-align: center;
+  font-family: "Cormorant Garamond", serif;
+}
+.section-intro p {
+  font-size: 22px;
+  color: #444;
+  max-width: 700px;
+  margin: 0 auto 20px;
+}
+.btn-go-shop {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: #2e7d5e;
+  color: #fff;
+  border-radius: 30px;
+  text-decoration: none;
+  font-size: 18px;
+  transition: 0.3s;
+}
+.btn-go-shop:hover {
+  background-color: #3f9d74;
+}
+
+/* ===============================
+   🌿 Signature Collection
+================================ */
+.section-feature {
+  padding: 100px 20px;
+  background-color: #ffffff;
+  text-align: center;
+}
+.section-feature h2 {
+  font-size: 40px;
+  margin-bottom: 50px;
+  color: #2b2b2b;
+}
+.feature-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+}
+.feature-card {
+  background-color: #f9faf8;
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  width: 280px;
+  padding: 25px;
+  transition: transform 0.3s ease;
+}
+.feature-card:hover {
+  transform: translateY(-8px);
+}
+.feature-card img {
+  width: 100%;
+  border-radius: 12px;
+}
+.feature-card h3 {
+  margin: 20px 0 10px;
+  font-size: 20px;
+  color: #2e7d5e;
+}
+.feature-card p {
+  color: #555;
+  font-size: 16px;
+}
+
+/* ===============================
+   🍃 Brand Story
+================================ */
+.section-story {
+  background-color: #eaf4ef;
+  padding: 100px 20px;
+  text-align: center;
+}
+.story-container {
+  max-width: 750px;
+  margin: 0 auto;
+}
+.story-container h2 {
+  font-size: 38px;
+  margin-bottom: 20px;
+}
+.story-container p {
+  font-size: 18px;
+  color: #333;
+  line-height: 1.7;
+  margin-bottom: 30px;
+}
+.btn-learn-more {
+  display: inline-block;
+  padding: 10px 25px;
+  background-color: #2e7d5e;
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
+  transition: 0.3s;
+}
+.btn-learn-more:hover {
+  background-color: #3fa37a;
+}
+
+/* ===============================
+   🌤 Fade-in Animation
+================================ */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* ===============================
+   🌿 Soft Fade-In for Hero Original Layout
+================================ */
+.hero {
+  position: relative;
+  opacity: 0;
+  animation: heroAppear 1.8s ease-out forwards;
+}
+
+@keyframes heroAppear {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 🪶 เพิ่ม fade-in ทีละบรรทัด (ไม่แตะ transform เดิมของชมพู) */
+.hero h1, .hero img, .hero h2, .hero h3, .hero h4, .hero h5 {
+  opacity: 0;
+  animation: fadeLine 1.3s ease forwards;
+}
+
+.hero h1 { animation-delay: 0.2s; }
+.hero img { animation-delay: 0.5s; }
+.hero h2 { animation-delay: 0.8s; }
+.hero h3 { animation-delay: 1.1s; }
+.hero h4 { animation-delay: 1.4s; }
+.hero h5 { animation-delay: 1.7s; }
+
+@keyframes fadeLine {
+  from { opacity: 0; filter: blur(3px); }
+  to { opacity: 1; filter: blur(0); }
+}
+
+/* 🌤 โลโก้ hover นุ่ม ๆ */
+.hero img {
+  transition: transform 0.6s ease, filter 0.6s ease;
+}
+
+/* ===============================
+   ☕ Featured Products Under Hero
+================================ */
+.featured-products {
+  padding: 80px 20px 100px;
+  background: #f2f3ef;
+  text-align: center;
+  font-family: "Cormorant Garamond", serif;
+  animation: fadeFeatured 1.5s ease-in;
+  margin-top: -700px;
+}
+
+.featured-products h2 {
+  font-size: 40px;
+  color: #2e7d5e;
+  margin-bottom: 60px;
+  letter-spacing: 1px;
+  position: relative;
+}
+.featured-products h2::after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  width: 80px;
+  height: 2px;
+  background: #2e7d5e;
+  transform: translateX(-50%);
+}
+
+/* 💎 Layout */
+.featured-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 60px;
+}
+
+.product-card {
+  width: 300px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 14px 40px rgba(46,125,94,0.15);
+}
+
+.product-card img {
+  width: 100%;
+  border-radius: 16px;
+  transition: transform 0.5s ease;
+}
+.product-card:hover img {
+  transform: scale(1.05);
+}
+
+.product-card h3 {
+  font-size: 22px;
+  margin: 20px 0 8px;
+  color: #2e7d5e;
+}
+
+.product-card p {
+  color: #555;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ✨ Fade animation */
+@keyframes fadeFeatured {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+/* ===============================
+   🌸 Footer เพิ่มความจบหรู
+================================ */
+.footer-chaploy {
+  background: #2e7d5e;
+  color: white;
+  text-align: center;
+  padding: 25px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 16px;
+  letter-spacing: 1px;
+  margin-top: 60px;
+}
+
+
+

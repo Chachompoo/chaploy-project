@@ -419,16 +419,28 @@ router.post('/checkout', uploadSlip.single('slip'), async (req, res) => {
     );
     const orderId = orderInsert.insertId;
 
-    // 5) บันทึกรายการสินค้า
-    for (const it of merged) {
-      if (!it.qty) continue;
-      const lineSubtotal = it.price * it.qty;
-      await conn.query(
-        `INSERT INTO order_items (order_id, product_id, quantity, price_each, subtotal)
-         VALUES (?, ?, ?, ?, ?)`,
-        [orderId, it.id, it.qty, it.price, lineSubtotal]
-      );
-    }
+    // 5) บันทึกรายการสินค้า + ลด stock
+for (const it of merged) {
+  if (!it.qty) continue;
+
+  const lineSubtotal = it.price * it.qty;
+
+  // ✅ insert ลง order_items
+  await conn.query(
+    `INSERT INTO order_items (order_id, product_id, quantity, price_each, subtotal)
+     VALUES (?, ?, ?, ?, ?)`,
+    [orderId, it.id, it.qty, it.price, lineSubtotal]
+  );
+
+  // ✅ ลด stock (อยู่ใน loop เดียวกับ it)
+  await conn.query(
+    `UPDATE products 
+     SET stock = GREATEST(stock - ?, 0)
+     WHERE id = ?`,
+    [it.qty, it.id]
+  );
+}
+
 
     // 6) บันทึกการชำระเงิน (pending)
     const slipRelPath = slipFile ? `/uploads/slips/${slipFile.filename}` : null;
