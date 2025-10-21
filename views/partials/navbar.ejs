@@ -10,44 +10,44 @@
 <nav class="navbar">
   <div class="navbar-left">
     <a href="/shop/all" class="nav-link">SHOP</a>
-    <a href="/about" class="nav-link">ABOUT</a>
-    <a href="/free" class="nav-link">FREE</a>
+    <a href="/contact" class="nav-link">CONTACT</a>
   </div>
 
   <div class="navbar-center">
     <a href="/" class="site-title">CHAPLOY</a>
   </div>
 
-
   <div class="navbar-right">
-  <a href="/contact" class="nav-link">CONTACT</a>
-  <% if (user) { %>
-    <div class="dropdown">
-  <a href="#" class="nav-link">ACCOUNT</a>
-  <div class="dropdown-content">
-    <strong><%= user.username %></strong>
-    <small><%= user.email %></small>
-    <hr>
-    <a href="/profile">Profile</a>
-    <a href="/purchases">Purchases</a>
-    <a href="/signout">Sign Out</a>
-  </div>
-</div>
-  <% } else { %>
-    <a href="/login" class="nav-link">LOGIN</a>
-  <% } %>
-  <a href="/shop/basket" class="nav-link">
-    BASKET (<span id="basketCount"><%= cartCount || 0 %></span>)</a>
+    <% if (user) { %>
+      <div class="dropdown">
+        <a href="#" class="nav-link">ACCOUNT</a>
+        <div class="dropdown-content">
+          <strong><%= user.username %></strong>
+          <small><%= user.email %></small>
+          <hr>
+          <a href="/profile">Profile</a>
+          <a href="/purchases">Purchases</a>
+          <a href="/signout">Sign Out</a>
+        </div>
+      </div>
+    <% } else { %>
+      <a href="/login" class="nav-link">LOGIN</a>
+    <% } %>
+
+    <a href="/shop/basket" class="nav-link">
+      BASKET (<span id="basketCount"><%= cartCount || 0 %></span>)
     </a>
-    </div>
-    </nav>
-    <script>
-      // 🟢 ตรวจจับว่ากลับมาจาก history (เช่น กดย้อนกลับ)
-      window.addEventListener("pageshow", function (event) {
-        if (event.persisted) {
-          window.location.reload();
-          }
-          });
-    </script>
+  </div>
+</nav>
+
+<script>
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      window.location.reload();
+    }
+  });
+</script>
+
+
 </body>
 </html>

@@ -1,25 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - Chaploy</title>
-    <link rel="stylesheet" href="/stylesheets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - Chaploy</title>
+  <link rel="stylesheet" href="/stylesheets/navbar.css">
+  <link rel="stylesheet" href="/stylesheets/contact.css?v=<%= Date.now() %>">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="contact-page">
-    <%- include('partials/navbar') %>
+  <%- include('partials/navbar') %>
 
-    <div class="contact-main-container">
-        <!-- ซ้าย: รูปผู้หญิงที่ยืน -->
-        <div class="contact-left">
-            <img src="/images/contact-fah.png" alt="Contact Image Left">
-        </div>
+  <section class="contact-hero">
+    <h1>Contact Chaploy</h1>
+    <p>Meet the people behind every cup of Chaploy Tea & Coffee.</p>
+  </section>
 
-        <!-- ขวา: รูปผู้หญิงเสื้อขาว -->
-        <div class="contact-right">
-            <img src="/images/contact-chom.jpg" alt="Contact Image Right">
-        </div>
+  <div class="contact-gallery">
+    <!-- รูป 1 -->
+    <div class="contact-person" onclick="openModal('chom')">
+      <img src="/images/contact-chom.jpg" alt="Chompoo">
+      <div class="overlay">Chompoo</div>
     </div>
 
+    <!-- รูป 2 -->
+    <div class="contact-person" onclick="openModal('fah')">
+      <img src="/images/contact-fah.png" alt="Fah">
+      <div class="overlay">Fah</div>
+    </div>
+  </div>
+
+  <!-- 🌸 Modal -->
+  <div id="contactModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <div class="modal-inner" id="modalInner"></div>
+    </div>
+  </div>
+
+  <script>
+    const profiles = {
+      chom: {
+        name: "Ploychompoo Kumloun",
+        role: "Founder & Creative Director",
+        email: "chompoo@chaploy.com",
+        quote: "“Tea is not just a drink — it’s an experience of calm.”"
+      },
+      fah: {
+        name: "Fah Napatra",
+        role: "Co-Founder & Marketing Strategist",
+        email: "fah@chaploy.com",
+        quote: "“Every aroma tells a story waiting to be shared.”"
+      }
+    };
+
+    function openModal(person) {
+      const p = profiles[person];
+      const modalInner = document.getElementById("modalInner");
+      modalInner.innerHTML = `
+        <h2>${p.name}</h2>
+        <h4>${p.role}</h4>
+        <p>Email: <a href="mailto:${p.email}">${p.email}</a></p>
+        <blockquote>${p.quote}</blockquote>
+      `;
+      document.getElementById("contactModal").style.display = "flex";
+      document.body.classList.add("modal-open");
+    }
+
+    function closeModal() {
+      document.getElementById("contactModal").style.display = "none";
+      document.body.classList.remove("modal-open");
+    }
+  </script>
 </body>
 </html>

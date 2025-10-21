@@ -273,22 +273,19 @@ const [recentOrders] = await db.promise().query(`
   // ----------------------------------------
   // ✅ 4. STATUS CHART (วงกลมจาก order_status จริง)
   // ----------------------------------------
-  const [statusData] = await db.promise().query(`
+    const [statusData] = await db.promise().query(`
     SELECT order_status, COUNT(*) AS count
     FROM orders
     GROUP BY order_status
   `);
 
-  const statusLabels = [];
-  const statusValues = [];
+  const allStatuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
+  const statusCounts = Object.fromEntries(statusData.map(s => [s.order_status.toLowerCase(), s.count]));
 
-  statusData.forEach(row => {
-    statusLabels.push(row.order_status);
-    statusValues.push(row.count);
-  });
-
-  chartData.statusLabels = statusLabels;
-  chartData.statusValues = statusValues;
+  chartData.statusLabels = allStatuses.map(s =>
+    s.charAt(0).toUpperCase() + s.slice(1)
+  );
+  chartData.statusValues = allStatuses.map(s => statusCounts[s] || 0);
 
 
     // ----------------------------------------
@@ -497,7 +494,7 @@ router.get('/orders', checkAdmin, async (req, res) => {
       } else if (displayStatus.toLowerCase().includes('customer')) {
         displayStatus = `Cancelled by Customer`;
       } else {
-        displayStatus = `Cancelled by Admin`;
+        displayStatus = `Cancelled by Customer`;
       }
     }
 

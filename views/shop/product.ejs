@@ -1,63 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
-  <link rel="stylesheet" href="/stylesheets/navbar.css">
-  <link rel="stylesheet" href="/stylesheets/product.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= product.name %> - Chaploy</title>
+  <link rel="stylesheet" href="/stylesheets/navbar.css" />
+  <link rel="stylesheet" href="/stylesheets/products.css?v=<%= Date.now() %>" />
 </head>
-<body>
+<body class="product-body">
   <%- include('../partials/navbar') %>
 
-  <div class="product-page">
+  <section class="product-page fade-in">
+    <!-- ✅ Left: Product Image -->
     <div class="product-left">
-      <img src="<%= product.image %>" alt="<%= product.name %>">
+      <div class="image-box">
+        <img src="<%= product.image %>" alt="<%= product.name %>" />
+      </div>
     </div>
 
+    <!-- ✅ Right: Product Info -->
     <div class="product-right">
-      <h1><%= product.name %></h1>
-      <p class="price">$<%= product.price %></p>
+      <h1 class="product-name"><%= product.name %></h1>
+      <p class="product-price">$<%= product.price %></p>
 
-      <% if (product.stock == 0) { %>
-        <p class="out">OUT OF STOCK</p>
+      <% if (product.status === 'inactive') { %>
+        <p class="not-available-text">NOT AVAILABLE</p>
+
+      <% } else if (product.stock == 0) { %>
+        <p class="out-of-stock-label">OUT OF STOCK</p>
+
       <% } else { %>
         <form id="addToCartForm">
-          <input type="hidden" name="productId" value="<%= product.id %>">
-          <button type="submit" class="add-cart-btn">ADD TO CART</button>
+          <input type="hidden" name="productId" value="<%= product.id %>" />
+          <button type="submit" class="add-cart-btn">
+            <i class="fa-regular fa-bag-shopping"></i> ADD TO CART
+          </button>
         </form>
       <% } %>
-    </div>
-  </div>
 
-  <script>
+
+      <% if (product.description) { %>
+        <p class="product-desc"><%= product.description %></p>
+      <% } else { %>
+        <p class="product-desc">
+          A premium blend of Chaploy’s signature collection — designed for
+          tea & coffee lovers who appreciate balance and aroma.
+        </p>
+      <% } %>
+    </div>
+  </section>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
   document.getElementById("addToCartForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const formData = new FormData(e.target);
     const productId = formData.get("productId");
 
     const res = await fetch("/shop/cart/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productId })
+      body: JSON.stringify({ productId }),
     });
 
     if (res.status === 401) {
-  alert("Please login before adding items to your basket.");
-  window.location.href = "/login";
-  return;
-}
+      Swal.fire({
+        icon: "warning",
+        title: "Please Login",
+        text: "You must log in before adding items to your basket.",
+        confirmButtonColor: "#43593E",
+      }).then(() => window.location.href = "/login");
+      return;
+    }
 
-const data = await res.json();
-if (data.loginRequired) {
-  window.location.href = "/login";
-  return;
-}
+    const data = await res.json();
 
-    if (data.success) {
-  document.getElementById("basketCount").textContent = data.count;
-}
+    // ❌ ถ้า stock หมด
+    if (!data.success) {
+      Swal.fire({
+        icon: "error",
+        title: "Out of Stock",
+        text: data.message || "Sorry, this product is currently unavailable.",
+        confirmButtonColor: "#43593E",
+      });
+      return;
+    }
+
+    // ✅ เพิ่มสินค้าสำเร็จ
+    Swal.fire({
+      icon: "success",
+      title: "Added to Basket",
+      text: "This item has been added to your basket.",
+      timer: 1800,
+      showConfirmButton: false
+    });
+
+    document.getElementById("basketCount").textContent = data.count;
   });
 </script>
 

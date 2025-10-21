@@ -82,19 +82,48 @@ h1 {
   text-align: right;
 }
 
-.checkout-btn {
-  background-color: #000;
+/* ✅ ปุ่ม Checkout พรีเมียม */
+.btn-checkout {
+  display: inline-block;
+  left: 15px;
+  margin-top: 20px;
+  background-color: #1b2b1a; /* เขียวชาเข้ม */
   color: #fff;
-  border: none;
   padding: 14px 40px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 15px;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(27, 43, 26, 0.15);
+  position: relative;
+  overflow: hidden;
 }
 
-.checkout-btn:hover {
-  background-color: #333;
+/* เอฟเฟกต์ตอน hover */
+.btn-checkout:hover {
+  background-color: #2f5d3e;
+  box-shadow: 0 10px 22px rgba(27, 43, 26, 0.25);
+  transform: translateY(-2px);
 }
+
+/* เพิ่ม animation เวลา hover */
+.btn-checkout::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255,255,255,0.2);
+  transition: all 0.4s ease;
+}
+
+.btn-checkout:hover::after {
+  left: 0;
+}
+
 
 .qty-controls {
   display: flex;

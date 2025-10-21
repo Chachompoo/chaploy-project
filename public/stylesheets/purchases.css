@@ -1,0 +1,170 @@
+/* ================================
+   🍵 CHAPLOY PURCHASES PAGE
+   Minimal Japanese-inspired style
+================================ */
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;600&display=swap');
+
+body {
+  font-family: "Geologica", sans-serif;
+  color: #f5f5f5;
+  background: url('/images/japan_room_bg.jpg') no-repeat center center/cover;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0;
+  padding-top: 70px; /* 👈 ลดจาก 100px เหลือ 70px */
+  position: relative;
+}
+
+
+/* 🌫 Overlay + เบลอหลัง */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url('/images/pexels.jpg') no-repeat center center/cover;
+  filter: blur(8px);
+  transform: scale(1.1);
+  z-index: -2;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: -1;
+}
+
+/* 🧾 Container */
+.purchases-container {
+  width: 90%;
+  max-width: 1000px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  padding: 40px;
+  border-radius: 18px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.8s ease;
+  margin-top: 100px;
+}
+
+/* Header */
+.purchases-container h1 {
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 25px;
+}
+
+/* Table */
+.purchases-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  color: #f5f5f5;
+}
+
+.purchases-table th,
+.purchases-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  text-align: center;
+}
+
+.purchases-table th {
+  color: rgb(215, 200, 168);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.purchases-table tr:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transition: background 0.3s ease;
+}
+
+/* Badges */
+.badge {
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+.badge.paid { background: rgba(70, 160, 90, 0.4); color: #d4f5d4; }
+.badge.pending { background: rgba(230, 190, 90, 0.4); color: #fff5cc; }
+.badge.confirmed { background: rgba(120, 200, 230, 0.4); color: #d0f3ff; }
+.badge.shipped { background: rgba(70, 160, 220, 0.4); color: #d8ecff; }
+.badge.delivered { background: rgba(90, 180, 100, 0.5); color: #d6ffd8; }
+.badge.cancelled { background: rgba(200, 60, 60, 0.4); color: #ffcfcf; }
+
+/* Buttons */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-view,
+.btn-cancel,
+.btn-disabled {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-view {
+  background: rgb(215, 200, 168);
+  color: #000;
+}
+.btn-view:hover {
+  background: #fff;
+}
+
+.btn-cancel {
+  background: rgba(200, 70, 70, 0.7);
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: rgba(255, 90, 90, 0.8);
+}
+
+.btn-disabled {
+  background: rgba(150, 150, 150, 0.4);
+  color: #ddd;
+  cursor: not-allowed;
+}
+
+/* Empty Message */
+.empty {
+  text-align: center;
+  color: #ccc;
+  font-size: 16px;
+  margin-top: 40px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .purchases-container {
+    padding: 25px;
+  }
+
+  .purchases-table th, .purchases-table td {
+    font-size: 13px;
+  }
+
+  .btn-view, .btn-cancel {
+    padding: 5px 10px;
+  }
+}

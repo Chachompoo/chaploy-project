@@ -1,12 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Archivo+Black&family=Baloo+Bhaijaan+2:wght@400..800&family=Castoro+Titling&family=Cinzel:wght@400..900&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Geologica:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+JP:wght@100..900&family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Quicksand:wght@300..700&family=Tangerine:wght@400;700&display=swap');
 
+@font-face {
+  font-family: 'HinaMincho';
+  src: url('/fonts/Hina-Mincho-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
 /* Navbar */
 .navbar {
     position: fixed;       /* ทำให้ติดอยู่บนตลอด */
     top: 0;                /* ชิดขอบบน */
     left: 0;               /* ชิดซ้าย */
     width: 96%;           /* กินเต็มจอ */
-    z-index: 1000;         /* อยู่เหนือ element อื่น */
+    z-index: 2000 !important;
     
     display: flex;
     justify-content: space-between;
@@ -227,14 +239,27 @@
   background-color: transparent; 
   border-bottom: 2px solid #ffffff;
 }
-/* navbar Contact*/
-.contact-page .navbar { 
-  background-color: #f7f1ed;
-  border-bottom: 1px solid #999995;
-} 
-.contact-page .navbar a { color: #fcc593;}
-.contact-page .navbar .site-title{
-  font-family: "Geologica", sans-serif; 
-  font-size: 35px;
-  color: #f19072;
+
+
+/* navbar profile*/
+.profile-page .navbar { 
+  background-color: transparent;
+}  
+.profile-page .navbar a { color: #ffffff;}
+.profile-page .dropdown-content { 
+  color: rgb(0, 0, 0);
+  backdrop-filter: blur(6px);
+  background: #ffffff;
+  border: 1px solid #000000;
+  
 }
+.profile-page .dropdown-content a {color: rgb(0, 0, 0);}
+
+/* purchases */
+.purchases-page .navbar { 
+  background-color: transparent;
+}  
+.purchases-page .navbar a { color: #ffffff;}
+.purchases-page .dropdown-content a {color: rgb(0, 0, 0);}
+
+

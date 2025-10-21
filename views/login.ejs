@@ -1,21 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Chaploy</title>
-    <link rel="stylesheet" href="/stylesheets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Chaploy</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 <body class="login-page">
   <div class="login-main-container">
     <div class="login-form-box">
       <div class="login-background-box"></div>
       <h2>LOG IN</h2>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="login-error"><%= error %></div>
+      <% } else if (typeof messageType !== 'undefined' && messageType === 'success') { %>
+        <div class="login-success"><%= message %></div>
+        <script>
+          // ✅ redirect หลังข้อความหาย
+          setTimeout(() => { 
+            window.location.href = "<%= message.includes('Admin') ? '/admin' : '/' %>"; 
+          }, 1800);
+        </script>
+      <% } %>
+
       <form action="/login" method="POST">
         <div class="login-input-container">
           <input type="text" name="username" placeholder=" " required>
           <label>USERNAME OR EMAIL *</label>
         </div>
+
         <div class="login-input-container">
           <input type="password" name="password" placeholder=" " required>
           <label>PASSWORD *</label>
@@ -30,9 +44,29 @@
       </form>
 
       <div class="login-links">
-        <a href="reset">Lost your password?</a> <a href="register">| Register</a>
+        <a href="reset">Lost your password?</a> 
+        <a href="register">| Register</a>
       </div>
     </div>
   </div>
+
+  <script>
+  const msg = document.querySelector('.login-error, .login-success');
+  if (msg) {
+    msg.style.opacity = 0;
+    msg.style.transform = 'translateY(-10px)';
+    msg.style.transition = 'all 0.6s ease';
+    setTimeout(() => {
+      msg.style.opacity = 1;
+      msg.style.transform = 'translateY(0)';
+    }, 100);
+
+    // ✅ ค่อย ๆ หายไปหลัง 1.5 วิ
+    setTimeout(() => {
+      msg.style.opacity = 0;
+      msg.style.transform = 'translateY(-10px)';
+    }, 1500);
+  }
+  </script>
 </body>
 </html>

@@ -15,16 +15,26 @@ function checkLogin(req, res, next) {
 router.get('/profile', checkLogin, async (req, res) => {
   try {
     const [[acc]] = await db.promise().query(
-      `SELECT a.customer_id, c.firstname, c.lastname, c.phone, c.email
-       FROM accounts a
-       LEFT JOIN customers c ON a.customer_id = c.id
-       WHERE a.id = ?`,
+      `SELECT 
+        a.id AS account_id,
+        a.username,             -- ✅ เพิ่มตรงนี้
+        a.customer_id, 
+        c.firstname, 
+        c.lastname, 
+        c.phone, 
+        c.email
+      FROM accounts a
+      LEFT JOIN customers c ON a.customer_id = c.id
+      WHERE a.id = ?`,
       [req.session.user.id]
     );
 
     if (!acc) return res.status(404).send('Account not found');
 
-    res.render('profile', { user: acc });
+    res.render('profile', { 
+    user: acc,
+    cartCount: (req.session.cart || []).length  // ✅ เพิ่มด้วยเพื่อให้ navbar แสดงตะกร้า
+  });
   } catch (err) {
     console.error('❌ Error loading profile:', err);
     res.status(500).send('Internal Server Error');

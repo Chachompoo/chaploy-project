@@ -5,20 +5,53 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 
+// ✅ ย้าย middleware ตัวนี้ขึ้นมาบนสุดเลย
+router.use((req, res, next) => {
+  if (!req.session.user) {
+    req.session.cart = [];
+    res.clearCookie('savedCart');
+  }
+  next();
+});
+
 // ==========================
 // 🛒 แสดงสินค้าทั้งหมด
 // ==========================
 router.get('/all', async (req, res) => {
   try {
-    const [products] = await db.promise().query(`
-      SELECT id, name, price, image, stock, status
-      FROM products
-      ORDER BY created_at DESC
-    `);
+    const rawCategory = req.query.category || 'ALL';
+    const category = decodeURIComponent(rawCategory.trim()); // ✅ แก้จุดนี้
+    const search = req.query.q ? `%${req.query.q}%` : '%';
+
+    let sql = `
+      SELECT 
+        p.id, p.name, p.price, p.image, p.stock, p.status, c.name AS category
+      FROM products p
+      LEFT JOIN categories c ON p.categories_id = c.id
+      WHERE p.name LIKE ?
+    `;
+    const params = [search];
+
+    if (category !== 'ALL') {
+      sql += ' AND c.name = ?';
+      params.push(category);
+    }
+
+    const [products] = await db.promise().query(sql, params);
+    const [categories] = await db.promise().query(`SELECT name, description FROM categories ORDER BY name ASC`);
+    const totalProducts = products.length;
+
+    // ✅ ดึง description ของ category (ไว้แสดงด้านบน)
+    const activeCategoryInfo = categories.find(cat => cat.name === category);
 
     res.render('shop/allProducts', {
       title: 'All Products - Chaploy',
       products,
+      categories,
+      activeCategory: category,
+      activeCategoryInfo, // ✅ ส่งคำอธิบายไปด้วย
+      searchQuery: req.query.q || '',
+      totalProducts,
       user: req.session.user || null,
       cartCount: (req.session.cart || []).reduce((sum, i) => sum + i.qty, 0)
     });
@@ -27,6 +60,8 @@ router.get('/all', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
+
 
 // ==========================
 // 📦 รายละเอียดสินค้า
@@ -166,7 +201,7 @@ router.post('/cart/remove', (req, res) => {
 });
 
 // ==========================
-// 🛍 เพิ่มสินค้าลงตะกร้า
+// 🛍 เพิ่มสินค้าลงตะกร้า (เวอร์ชันกันสินค้าหมด)
 // ==========================
 router.post('/cart/add', async (req, res) => {
   if (!req.session.user || !req.session.user.id) {
@@ -176,25 +211,54 @@ router.post('/cart/add', async (req, res) => {
   const { productId } = req.body;
   if (!req.session.cart) req.session.cart = [];
 
-  // ดึงราคาจาก DB เพื่อให้ cart มี price ด้วย
-  const [rows] = await db.promise().query('SELECT id, name, price FROM products WHERE id = ?', [productId]);
-  if (rows.length === 0) return res.json({ success: false, message: "Product not found" });
-  const product = rows[0];
+  try {
+    // ✅ ดึงข้อมูลสินค้าจากฐานข้อมูล
+    const [[product]] = await db.promise().query(
+      'SELECT id, name, price, stock FROM products WHERE id = ?',
+      [productId]
+    );
 
-  const existing = req.session.cart.find(item => item.id == productId);
-  if (existing) {
-    existing.qty += 1;
-  } else {
-    req.session.cart.push({ id: product.id, name: product.name, price: Number(product.price), qty: 1 });
+    if (!product) {
+      return res.json({ success: false, message: "Product not found" });
+    }
+
+    // 🚫 ถ้าหมดสต็อก — ห้ามเพิ่มลงตะกร้า
+    if (product.stock <= 0) {
+      return res.json({ success: false, message: `${product.name} is out of stock.` });
+    }
+
+    // ✅ เพิ่มสินค้าใน session.cart
+    const existing = req.session.cart.find(item => item.id == productId);
+    if (existing) {
+      // ถ้าเกินจำนวน stock — ห้ามเพิ่มอีก
+      if (existing.qty >= product.stock) {
+        return res.json({ success: false, message: "Out of stock" });
+      }
+      existing.qty += 1;
+    } else {
+      req.session.cart.push({
+        id: product.id,
+        name: product.name,
+        price: Number(product.price),
+        qty: 1
+      });
+    }
+
+    // ✅ คำนวณยอดรวมสินค้าในตะกร้า
+    const count = req.session.cart.reduce((sum, i) => sum + i.qty, 0);
+
+    res.cookie('savedCart', JSON.stringify(req.session.cart), {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: false
+    });
+
+    res.json({ success: true, count });
+  } catch (err) {
+    console.error("❌ Error adding to cart:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
-
-  const count = req.session.cart.reduce((sum, i) => sum + i.qty, 0);
-  res.cookie('savedCart', JSON.stringify(req.session.cart), {
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: false
-  });
-  res.json({ success: true, count });
 });
+
 
 // ==========================
 // 💳 ระบบ Checkout

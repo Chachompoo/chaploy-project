@@ -140,6 +140,28 @@ body  {
   text-decoration: none;
   color: #fff;
 }
+.login-error {
+  color: #ffb3b3;
+  background-color: transparent;
+  border-radius: 6px;
+  padding: 10px;
+  text-align: center;
+  width: 50%;
+  margin: 15px auto;
+  font-family: "Geologica", sans-serif;
+}
+
+.login-success {
+  color: #b0ffb3;
+  background-color: transparent;
+  border-radius: 6px;
+  padding: 10px;
+  text-align: center;
+  width: 50%;
+  margin: 15px auto;
+  font-family: "Geologica", sans-serif;
+}
+
 
 /* Register Page */
 .register-page {

@@ -59,6 +59,24 @@ app.use(async (req, res, next) => {
   next();
 });
 
+// ✅ เคลียร์ cookie savedCart เมื่อ session ไม่มี user
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    res.clearCookie('savedCart', { path: '/' });
+    req.session.cart = [];
+  }
+  next();
+});
+
+// ✅ ทำให้ทุกหน้า EJS มีตัวแปร error/success เป็นค่าเริ่มต้นเสมอ
+app.use((req, res, next) => {
+  res.locals.error = null;
+  res.locals.success = null;
+  next();
+});
+
+
+
 // ✅ Navbar categories
 app.use(navbarData);
 

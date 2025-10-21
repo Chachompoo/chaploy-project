@@ -4,48 +4,69 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %></title>
-  <link rel="stylesheet" href="/stylesheets/products.css">
+  <link rel="stylesheet" href="/stylesheets/products.css?v=<%= Date.now() %>">
   <link rel="stylesheet" href="/stylesheets/navbar.css">
 </head>
 <body class="all-products-page">
 
   <%- include('../partials/navbar') %>
 
-  <!-- Filter Bar -->
+  <!-- ✅ Filter + Search -->
   <section class="filter-bar">
-    <a href="/shop/all" class="active">ALL</a>
-    <a href="/shop/category/mockups">MOCKUPS</a>
-    <a href="/shop/category/canva">CANVA TEMPLATES</a>
+    <div class="categories">
+      <a href="/shop/all" class="<%= activeCategory === 'ALL' ? 'active' : '' %>">ALL</a>
+      <% categories.forEach(cat => { %>
+        <a href="/shop/all?category=<%= encodeURIComponent(cat.name) %>&q=<%= searchQuery %>"
+          class="<%= activeCategory === cat.name ? 'active' : '' %>">
+          <%= cat.name.toUpperCase() %>
+        </a>
+      <% }) %>
+    </div>
+
+    <form action="/shop/all" method="get" class="search-form">
+      <input type="hidden" name="category" value="<%= activeCategory %>">
+      <input type="text" name="q" placeholder="Search product..." value="<%= searchQuery %>" autocomplete="off">
+      <button type="submit">Search</button>
+    </form>
   </section>
 
-  <!-- Product Grid -->
+  <!-- ✅ Product Count -->
+  <div class="product-count">
+    <% if (searchQuery && activeCategory !== 'ALL') { %>
+      <%= totalProducts %> results for "<%= searchQuery %>" in <%= activeCategory %>
+    <% } else if (searchQuery) { %>
+      <%= totalProducts %> results for "<%= searchQuery %>"
+    <% } else if (activeCategory !== 'ALL') { %>
+      <%= totalProducts %> items in <%= activeCategory %>
+    <% } else { %>
+      All <%= totalProducts %> products available
+    <% } %>
+  </div>
+
+  <!-- ✅ Product Grid -->
   <section class="product-grid">
-  <% if (products.length === 0) { %>
-    <p class="no-products">No products found.</p>
-  <% } else { %>
-    <% products.forEach(p => { %>
-      <div class="product-card">
-        <a href="/shop/product/<%= p.id %>">
-          <div class="image-container">
-            <img src="<%= p.image %>" alt="<%= p.name %>">
+    <% if (products.length === 0) { %>
+      <p class="no-products">No products found.</p>
+    <% } else { %>
+      <% products.forEach(p => { %>
+        <div class="product-card">
+          <a href="/shop/product/<%= p.id %>">
+            <div class="image-container">
+              <img src="<%= p.image %>" alt="<%= p.name %>">
 
-
-             <% if (p.stock == 0) { %><div class="overlay out-of-stock">OUT OF STOCK</div>
-             <div class="overlay out-of-stock">OUT OF STOCK</div>
-            <% } else if (p.status !== 'active') { %>
-              <div class="overlay not-available">NOT AVAILABLE</div>
-            <% } %>
-
-          </div>
-          <h3><%= p.name %></h3>
-          <p class="price">$<%= p.price %></p>
-        </a>
-      </div>
-    <% }) %>
-  <% } %>
-</section>
-
+              <% if (p.stock == 0) { %>
+                <div class="overlay out-of-stock">OUT OF STOCK</div>
+              <% } else if (p.status !== 'active') { %>
+                <div class="overlay not-available">NOT AVAILABLE</div>
+              <% } %>
+            </div>
+            <h3><%= p.name %></h3>
+            <p class="price">$<%= p.price %></p>
+          </a>
+        </div>
+      <% }) %>
+    <% } %>
+  </section>
 
 </body>
 </html>
-
