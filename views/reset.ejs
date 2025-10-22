@@ -30,7 +30,7 @@
       You will receive a link to create a new password via email.
     </p>
 
-    <form action="/reset-password" method="POST" class="reset-form">
+    <form action="/reset" method="POST" class="reset-form">
       <div class="reset-input-group">
         <input type="text" id="username" name="username" placeholder=" " required>
         <label for="username">Username or email *</label>
@@ -39,5 +39,17 @@
       <button type="submit" class="reset-btn">RESET PASSWORD</button>
     </form>
   </div>
+
+  <script>
+  const form = document.querySelector('.reset-form');
+  const button = document.querySelector('.reset-btn');
+
+  form.addEventListener('submit', () => {
+    // แสดงสถานะโหลด
+    button.classList.add('loading');
+    button.innerHTML = '<span class="spinner"></span>Sending...';
+  });
+</script>
+
 </body>
 </html>

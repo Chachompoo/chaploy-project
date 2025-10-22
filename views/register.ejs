@@ -87,7 +87,17 @@
           <label>Email</label>
         </div>
         <div class="register-input-group">
-          <input type="text" name="phone" placeholder=" " required>
+          <input 
+            type="text" 
+            name="phone" 
+            placeholder=" " 
+            required 
+            maxlength="10" 
+            pattern="[0-9]{10}" 
+            inputmode="numeric"
+            title="Please enter exactly 10 digits (numbers only)"
+          >
+
           <label>Phone</label>
         </div>
         <div class="register-input-group">
@@ -107,5 +117,38 @@
       </form>
     </div>
   </div>
+
+  <!-- ✅ SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.querySelector(".register-form").addEventListener("submit", function (e) {
+  const password = document.querySelector('input[name="password"]').value.trim();
+
+  // ✅ Regex ตรวจรหัสผ่าน (ต้องมี ตัวใหญ่ ตัวเล็ก ตัวเลข และอักขระพิเศษ)
+  const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+  if (!strongPassword.test(password)) {
+    e.preventDefault(); // ❌ หยุดส่งฟอร์ม
+    Swal.fire({
+      icon: 'warning',
+      title: 'Weak Password',
+      html: `
+        <p style="font-size:16px;">Your password must include:</p>
+        <ul style="text-align:left; font-size:15px; line-height:1.6;">
+          <li>✔ At least 8 characters</li>
+          <li>✔ One uppercase letter</li>
+          <li>✔ One lowercase letter</li>
+          <li>✔ One number</li>
+          <li>✔ One special character (e.g. !, @, #, $, %, ., _)</li>
+        </ul>
+      `,
+      confirmButtonColor: '#43593E',
+      confirmButtonText: 'Got it!'
+    });
+  }
+});
+</script>
+
 </body>
 </html>

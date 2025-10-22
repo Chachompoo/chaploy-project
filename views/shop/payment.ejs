@@ -36,7 +36,16 @@
           </div>
           <div class="field">
             <label>Phone</label>
-            <input name="phone" required />
+            <input 
+            type="text" 
+            name="phone" 
+            placeholder=" " 
+            required 
+            maxlength="10" 
+            pattern="[0-9]{10}" 
+            inputmode="numeric"
+            title="Please enter exactly 10 digits (numbers only)"
+          >
           </div>
           <div class="field">
             <label>Email (we’ll send the receipt here)</label>

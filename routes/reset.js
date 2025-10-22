@@ -70,7 +70,7 @@ router.post('/', (req, res) => {
                   
                   <!-- Header -->
                   <div style="background: linear-gradient(135deg, #d6c6b9, #b59f8c); padding: 20px 0 15px 0; text-align: center;">
-                    <img src="https://raw.githubusercontent.com/Chachompoo/chaploy-project/main/public/images/Chaploy-removebg.png" 
+                    <img src="https://raw.githubusercontent.com/Chachompoo/chaploy-project/main/public/images/Chaploy-remove.png" 
                          alt="Chaploy Logo" 
                          style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 5px;">
                     <h1 style="color: #fff; font-weight: 600; letter-spacing: 1px; margin: 3px 0 0;">Chaploy</h1>

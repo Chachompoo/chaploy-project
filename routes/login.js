@@ -4,12 +4,12 @@ const db = require('../db');
 const bcrypt = require('bcrypt');
 
 // ✅ ฟังก์ชันบันทึก log login
-async function logUserLogin(db, account_id, username, role) {
+async function logUserLogin(db, account_id, staff_id, username, role) {
   try {
     await db.promise().query(
-      `INSERT INTO loglogin (account_id, username, role, login_time)
-       VALUES (?, ?, ?, NOW())`,
-      [account_id, username, role]
+      `INSERT INTO loglogin (account_id, staff_id, username, role, login_time)
+       VALUES (?, ?, ?, ?, NOW())`,
+      [account_id, staff_id, username, role]
     );
     console.log(`🪵 Login logged for ${username} (${role})`);
   } catch (err) {
@@ -77,7 +77,7 @@ router.post('/', async (req, res) => {
       console.log(`🟢 USER LOGIN: ${user.username} (${user.role})`);
 
       // ✅ บันทึกลง loglogin
-      await logUserLogin(db, user.id, user.username, user.role);
+      await logUserLogin(db, user.id, null, user.username, user.role);
 
       return res.render('login', { 
         error: null, 
@@ -122,19 +122,8 @@ router.post('/', async (req, res) => {
     };
 
     console.log(`🟣 ADMIN LOGIN: ${staff.username} (${staff.role})`);
+    await logUserLogin(db, null, staff.stfID, staff.username, staff.role);
     console.log('🧩 Staff object:', staff); // ✅ ตรวจสอบค่าใน console
-
-    // ✅ เพิ่ม try/catch log ลงฐานข้อมูล
-    try {
-      await db.promise().query(
-        `INSERT INTO loglogin (account_id, username, role, login_time)
-         VALUES (?, ?, ?, NOW())`,
-        [staff.stfID, staff.username, staff.role]
-      );
-      console.log(`🪵 Login logged for ${staff.username} (${staff.role})`);
-    } catch (logErr) {
-      console.error('❌ Error logging staff login:', logErr);
-    }
 
     // ✅ แสดงข้อความสำเร็จ
     return res.render('login', { 

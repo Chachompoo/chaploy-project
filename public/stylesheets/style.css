@@ -347,7 +347,7 @@ body  {
 
 .reset-input-group {
   position: relative;
-  margin: 30px auto;
+  margin: 10px auto;
   width: 60%;
 }
 
@@ -425,6 +425,31 @@ body  {
 .reset-container p[style*="color: #ff9090"] {
   color: #ff8080;
 }
+
+  /* spinner ตัวเล็กในปุ่ม */
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #fff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* ปุ่มขณะโหลด */
+  .reset-btn.loading {
+    opacity: 0.8;
+    pointer-events: none;
+    background-color: #333;
+  }
 
 
 

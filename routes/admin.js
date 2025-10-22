@@ -60,7 +60,7 @@ router.get('/products/add', checkAdmin, (req, res) => {
 });
 
 router.post('/products/add', checkAdmin, upload.single('image'), (req, res) => {
-  const staffId = req.session.user?.staff_id ?? req.session.user?.id ?? null;
+  const staffId = req.session.user?.stfID ?? null;
   const { name, description, price, stock, category_id, status } = req.body;
   const image = req.file ? '/uploads/products/' + req.file.filename : null;
 
@@ -103,7 +103,9 @@ router.get('/products/edit/:id', checkAdmin, (req, res) => {
 });
 
 router.post('/products/edit/:id', checkAdmin, upload.single('image'), (req, res) => {
-  const staffId = req.session.user?.staff_id ?? req.session.user?.id ?? null;
+  const staffId = req.session.user?.stfID ?? null;
+  console.log("🧩 staffId =", staffId);
+
   const { name, description, price, stock, category_id, status, old_image } = req.body;
   const image = req.file ? '/uploads/products/' + req.file.filename : old_image;
 
@@ -195,27 +197,33 @@ router.get('/dashboard', checkAdmin, async (req, res) => {
       SELECT COUNT(*) AS totalStaff FROM staff
     `);
 
-    // ✅ Total Profit (จากราคาขาย - ต้นทุน)
+    // ✅ Total Profit (จากราคาขาย - ต้นทุน ของออเดอร์ที่จ่ายแล้วเท่านั้น)
     const [[totalProfit]] = await db.promise().query(`
-    SELECT 
-      COALESCE(SUM(oi.quantity * (p.price - p.cost)), 0) AS totalProfit
+      SELECT 
+        COALESCE(SUM(oi.quantity * (p.price - p.cost)), 0) AS totalProfit
       FROM order_items oi
       JOIN products p ON oi.product_id = p.id
+      JOIN orders o ON oi.order_id = o.id
+      WHERE o.payment_status = 'paid'
     `);
 
 
     // ✅ Daily Visitors (จาก loglogin)
     const [[dailyVisitors]] = await db.promise().query(`
-      SELECT COUNT(*) AS todayVisits 
+      SELECT COUNT(DISTINCT username) AS todayVisits 
       FROM loglogin 
       WHERE DATE(login_time) = CURDATE()
+      AND role = 'user'
     `);
 
+
     const [[yesterdayVisitors]] = await db.promise().query(`
-      SELECT COUNT(*) AS yesterdayVisits 
-      FROM loglogin 
-      WHERE DATE(login_time) = CURDATE() - INTERVAL 1 DAY
-    `);
+    SELECT COUNT(DISTINCT username) AS yesterdayVisits 
+    FROM loglogin 
+    WHERE DATE(login_time) = CURDATE() - INTERVAL 1 DAY
+    AND role = 'user'
+  `);
+
 
     summary.totalSales     = Number(totalSales.totalSales) || 0;
     summary.totalOrders    = totalOrders.totalOrders || 0;
@@ -753,6 +761,23 @@ router.post('/payments/verify/:id', async (req, res) => {
           verified_at = NOW()
       WHERE id = ?
     `, [staffId, paymentId]);
+
+        // ✅ อัปเดตตาราง orders ให้ตรงกับสถานะการชำระเงินจริง
+    const [[payment]] = await db.promise().query(
+      `SELECT order_id FROM payments WHERE id = ?`,
+      [paymentId]
+    );
+
+    if (payment && payment.order_id) {
+      await db.promise().query(`
+        UPDATE orders
+        SET payment_status = 'paid',
+            order_status = 'confirmed'
+        WHERE id = ?
+      `, [payment.order_id]);
+      console.log(`✅ Order ${payment.order_id} marked as PAID & CONFIRMED`);
+    }
+
 
     // 2. ดึงข้อมูลใบเสร็จ
     const [[info]] = await db.promise().query(`
